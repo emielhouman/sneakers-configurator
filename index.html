@@ -1,13 +1,80 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite App</title>
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+  <div class="configurator__controls">
+    <div class="selected__part">
+      <h2 class="part__title">
+        <span class="part__name">Tip</span>
+        <span class="part__number">1-7</span>
+      </h2>
+      <svg class="part__arrow prev" viewbox="0 0 24 24" width="24px" height="24px" fill="none">
+        <path stroke="currentColor" stroke-width="2" d="M11.021 18.967L4.055 12l6.966-6.967M4 12h17"></path>
+      </svg>
+      <svg class="part__arrow next" viewbox="0 0 24 24" width="24px" height="24px" fill="none">
+        <path stroke="currentColor" stroke-width="2" d="M12.979 18.967L19.945 12 12.98 5.033M20 12H3"></path>
+      </svg>
+    </div>
+    <div class="textures__options">
+      <div class="texture__option" data-texture="leather">
+        <span class="texture__name">Leather</span>
+      </div>
+      <div class="texture__option" data-texture="crocodile">
+        <span class="texture__name">Crocodile</span>
+      </div>
+      <div class="texture__option" data-texture="denim">
+        <span class="texture__name">Denim</span>
+      </div>
+    </div>
+    <div class="colors__options">
+      <div class="color__option" data-color="#41B8CF">
+        <div class="color__wrapper">
+          <div class="color__fill" style="background-color: #41B8CF;"></div>
+        </div>
+        <span class="color__name">Blue</span>
+      </div>
+      <div class="color__option" data-color="#A71324">
+        <div class="color__wrapper">
+          <div class="color__fill" style="background-color: #A71324;"></div>
+        </div>
+        <span class="color__name">Red</span>
+      </div>
+      <div class="color__option" data-color="#E68FAC">
+        <div class="color__wrapper">
+          <div class="color__fill" style="background-color: #E68FAC;"></div>
+        </div>
+        <span class="color__name">Pink</span>
+      </div>
+      <div class="color__option" data-color="#424E5A">
+        <div class="color__wrapper">
+          <div class="color__fill" style="background-color: #424E5A;"></div>
+        </div>
+        <span class="color__name">Grey</span>
+      </div>
+      <div class="color__option" data-color="#F5C900">
+        <div class="color__wrapper">
+          <div class="color__fill" style="background-color: #F5C900;"></div>
+        </div>
+        <span class="color__name">Yellow</span>
+      </div>
+      <div class="color__option" data-color="#DB4A0E">
+        <div class="color__wrapper">
+          <div class="color__fill" style="background-color: #DB4A0E;"></div>
+        </div>
+        <span class="color__name">Orange</span>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/main.js"></script>
+</body>
+
 </html>
