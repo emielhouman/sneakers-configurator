@@ -11,10 +11,19 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Load the background
-const textureLoader = new THREE.TextureLoader();
-const texture360 = textureLoader.load('hangar.png');
-scene.background = texture360;
+// Load the 360 panorama environment
+const loader = new THREE.TextureLoader();
+const texture360 = loader.load('/hangar.png', () => {
+  console.log('Texture loaded with success');
+}, undefined, (err) => {
+  console.error('Error loading texture:', err);
+});
+
+// Create a sphere for the environment (360-degree panorama)
+const sphereGeometry = new THREE.SphereGeometry(500, 60, 40); // Large sphere
+const sphereMaterial = new THREE.MeshBasicMaterial({ map: texture360, side: THREE.BackSide }); // Texture on inside
+const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+scene.add(sphere);
 
 // OrbitControls setup
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -45,16 +54,21 @@ window.addEventListener('resize', () => {
 });
 
 // Add a rounded platform
-const platformGeometry = new THREE.CylinderGeometry(10, 10, 0.5, 64);
+const platformGeometry = new THREE.CylinderGeometry(12, 20, 200, 64);
 const platformMaterial = new THREE.MeshStandardMaterial({
-  color: 0x444444,
-  metalness: 0.5,
-  roughness: 0.8,
+  //color white
+  color: 0xffffff,
+  metalness: 0,
+  roughness: 0,
 });
 const platform = new THREE.Mesh(platformGeometry, platformMaterial);
-platform.position.set(0, -8, 0); // Place below the shoe
+platform.position.set(0, -100, 0);
 scene.add(platform);
 
+//add light to the platform
+const platformLight = new THREE.PointLight(0xffffff, 1);
+platformLight.position.set(0, 0, 0);
+scene.add(platformLight);
 
 // Raycaster setup
 const raycaster = new THREE.Raycaster();
@@ -70,8 +84,8 @@ gltfLoader.load(
     sneaker = gltf.scene;
     sneaker = gltf.scene;
     sneaker.scale.set(50, 50, 50);
-    sneaker.position.set(0, 0, 0); // Adjust height to make it appear floating
-    sneaker.rotation.x = Math.PI / 12;
+    sneaker.position.set(0, 2, -1.5); // Adjust height to make it appear floating
+    
 
     scene.add(sneaker);
 
