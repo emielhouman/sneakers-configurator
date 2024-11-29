@@ -44,6 +44,18 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+// Add a rounded platform
+const platformGeometry = new THREE.CylinderGeometry(10, 10, 0.5, 64);
+const platformMaterial = new THREE.MeshStandardMaterial({
+  color: 0x444444,
+  metalness: 0.5,
+  roughness: 0.8,
+});
+const platform = new THREE.Mesh(platformGeometry, platformMaterial);
+platform.position.set(0, -8, 0); // Place below the shoe
+scene.add(platform);
+
+
 // Raycaster setup
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -56,8 +68,9 @@ gltfLoader.load(
   '/sneaker.glb',
   (gltf) => {
     sneaker = gltf.scene;
+    sneaker = gltf.scene;
     sneaker.scale.set(50, 50, 50);
-    sneaker.position.set(0, 0, 0);
+    sneaker.position.set(0, 0, 0); // Adjust height to make it appear floating
     sneaker.rotation.x = Math.PI / 12;
 
     scene.add(sneaker);
