@@ -1,1 +1,1 @@
-# 3D Sneakers: Configurator 🎨 👟
+# 3D Sneakers: Configurator  🎨 👟
