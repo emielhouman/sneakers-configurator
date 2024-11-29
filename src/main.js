@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-
 // Scene setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -14,10 +13,8 @@ document.body.appendChild(renderer.domElement);
 
 // Load the background
 const textureLoader = new THREE.TextureLoader();
-const texture360 = textureLoader.load('hangar.png'); // Zorg dat het pad klopt
+const texture360 = textureLoader.load('hangar.png');
 scene.background = texture360;
-
-
 
 // OrbitControls setup
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -30,11 +27,11 @@ controls.update();
 camera.position.set(-20, 5, -20);
 camera.lookAt(0, 0, 0);
 
-// Ambient Light (for global illumination)
+// Ambient Light
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
 
-// Directional Light (to simulate sunlight)
+// Directional Light
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.castShadow = true;
 directionalLight.position.set(0, 10, 0);
@@ -46,6 +43,10 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+// Raycaster setup
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
 
 // Load GLB model of the sneaker
 const gltfLoader = new GLTFLoader();
@@ -60,14 +61,13 @@ gltfLoader.load(
     sneaker.rotation.x = Math.PI / 12;
 
     scene.add(sneaker);
-    console.log('Model added to the scene:', sneaker);
 
     // Apply a standard material
     gltf.scene.traverse((child) => {
       if (child.isMesh) {
         child.material = new THREE.MeshStandardMaterial({
           color: 0xFFFFFF,
-          roughness: 0.5
+          roughness: 0.5,
         });
       }
     });
@@ -77,6 +77,30 @@ gltfLoader.load(
     console.error('Error loading model:', error);
   }
 );
+
+// Mouse move event listener
+window.addEventListener('mousemove', (event) => {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  if (sneaker) {
+    raycaster.setFromCamera(mouse, camera);
+
+    const intersects = raycaster.intersectObjects(sneaker.children, true);
+
+    sneaker.traverse((child) => {
+      if (child.isMesh) {
+        child.material.emissive.setHex(0x000000); // Reset color
+      }
+    });
+
+    intersects.forEach((intersect) => {
+      if (intersect.object.isMesh) {
+        intersect.object.material.emissive.setHex(0xff0000); // Highlight color
+      }
+    });
+  }
+});
 
 // Animation loop
 function animate() {
