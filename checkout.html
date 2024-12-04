@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <link rel="stylesheet" href="checkout.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">SNEAKER-ORDER</div>
+        <nav class="navbar">
+          <a href="#">Shop</a>
+          <a href="#">Journal</a>
+          <a href="#">About us</a>
+          <a href="#">Contact</a>
+        </nav>
+        <div class="icons">
+          <a href="#" class="icon search">🔍</a>
+          <a href="#" class="icon cart">
+            <span class="cart-icon">🛒</span>
+          </a>
+          <a href="#" class="icon menu">☰</a>
+        </div>
+      </header>
+
+      <main class="cart-container">
+        <!-- Shopping Cart Section -->
+        <section class="cart">
+          <h1 class="cart-title">Shopping Cart</h1>
+          <table class="cart-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Size</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="cart-items">
+              <!-- Items will be dynamically populated by JavaScript -->
+            </tbody>
+          </table>
+          <div class="cart-footer">
+            <a href="#" class="continue-shopping">← Continue Shopping</a>
+            <div class="totals">
+              <p>Subtotal: $<span id="subtotal">0.00</span></p>
+              <p>Shipping: Free</p>
+              <p class="total-amount">Total: $<strong id="total">0.00</strong></p>
+            </div>
+          </div>
+        </section>
+
+        
+
+        <!-- Payment and Shipping Information Section -->
+        <div class="info-container">
+            <section class="contact-info">
+                <form action="#" method="POST">
+                  <label for="email">Contact information</label>
+                  <input type="email" id="email" name="email" placeholder="Email">
+                  <input type="checkbox" id="newsletter" name="newsletter">
+                  <label for="newsletter">Email me with news and offers</label>
+    
+                  <div class="shipping-address">
+                    <label for="first-name">Shipping address</label>
+                    <input type="text" id="first-name" name="first-name" placeholder="First name">
+                    <input type="text" id="last-name" name="last-name" placeholder="Last name">
+                    <input type="text" id="company" name="company" placeholder="Company (optional)">
+                    <input type="text" id="address" name="address" placeholder="Address">
+                    <input type="text" id="apartment" name="apartment" placeholder="Apartment, suite, etc. (optional)">
+                    <input type="text" id="city" name="city" placeholder="City">
+                    <div class="state-zip-container">
+                      <select id="country" name="country">
+                        <option value="us">United States</option>
+                      </select>
+                      <select id="state" name="state">
+                        <option value="state">State</option>
+                      </select>
+                      <input type="text" id="zip" name="zip" placeholder="ZIP code">
+                    </div>
+                    <input type="text" id="phone" name="phone" placeholder="Phone (optional)">
+                  </div>
+                </form>
+              </section>
+
+          <section class="payment-info">
+            <h2>Payment Info</h2>
+            <form>
+              <!-- Payment Method -->
+              <div class="payment-method">
+                <label>Payment Method:</label>
+                <div class="payment-options">
+                  <label class="payment-option">
+                    <input type="radio" name="payment-method" value="credit-card" checked>
+                    <span>Credit Card</span>
+                  </label>
+                  <label class="payment-option">
+                    <input type="radio" name="payment-method" value="paypal">
+                    <span>PayPal</span>
+                  </label>
+                  <label class="payment-option">
+                    <input type="radio" name="payment-method" value="apple-pay">
+                    <span>Apple Pay</span>
+                  </label>
+                  <label class="payment-option">
+                    <input type="radio" name="payment-method" value="bancontact">
+                    <span>Bancontact</span>
+                  </label>
+                </div>
+              </div>
+              <!-- Card Details -->
+              <div>
+                <label for="name-on-card">Name On Card:</label>
+                <input type="text" id="name-on-card" placeholder="John Carter">
+              </div>
+              <div>
+                <label for="card-number">Card Number:</label>
+                <input type="text" id="card-number" placeholder="•••• •••• •••• 2153">
+              </div>
+              <!-- Expiration Date and CVV -->
+              <div class="card-details">
+                <div>
+                  <label for="exp-date">Expiration Date:</label>
+                  <input type="text" id="exp-date" placeholder="MM / YY">
+                </div>
+                <div>
+                  <label for="cvv">CVV:</label>
+                  <input type="text" id="cvv" placeholder="123">
+                </div>
+              </div>
+              <!-- Checkout Button -->
+              <button type="button" class="checkout-btn">Check Out</button>
+            </form>
+          </section>
+
+        
+        </div>
+      </main>
+
+  <script src="checkout.js"></script>
+</body>
+</html>
