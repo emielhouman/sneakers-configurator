@@ -3,6 +3,19 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 
+let orders = []; // Definieer de variabele orders als een lege array
+
+window.onload = async () => {
+  try {
+    const response = await fetch('https://sneakers-api-ouat.onrender.com/api/v1/orders');
+    const data = await response.json();
+    orders = data.data.orders; // Gebruik de variabele orders om de data op te slaan
+    console.log('Fetch request succesful:', orders);
+  } catch (error) {
+    console.error('Fetch request failed:', error);
+  }
+};
+
 // Scene setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -37,25 +50,44 @@ controls.update();
 camera.position.set(0, 10, 20);
 camera.lookAt(0, 0, 0);
 
-// Ambient Light
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(ambientLight);
-
-// Directional Light
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+// Directional Light instellingen
+const directionalLight = new THREE.DirectionalLight(0xffffff, 5); // Intensiteit verhoogd naar 5
 directionalLight.castShadow = true;
 directionalLight.position.set(0, 20, 20);
-directionalLight.shadow.mapSize.width = 2048;
-directionalLight.shadow.mapSize.height = 2048;
+directionalLight.shadow.mapSize.width = 4096; // Schaduwresolutie verhogen
+directionalLight.shadow.mapSize.height = 4096; // Schaduwresolutie verhogen
+
+// Vergroot het zichtbare gebied van de schaduw
+directionalLight.shadow.camera.left = -50;  
+directionalLight.shadow.camera.right = 50;  
+directionalLight.shadow.camera.top = 50;    
+directionalLight.shadow.camera.bottom = -50; 
+directionalLight.shadow.camera.near = 0.1;   
+directionalLight.shadow.camera.far = 200;    
+
 scene.add(directionalLight);
 
-// Spotlight on 3D object
-const spotLight2 = new THREE.SpotLight(0xffffff, 1, 100, Math.PI / 2, 0.5);
-spotLight2.position.set(0, 20, 20); // Positie bovenop de schoen
+// Ambient Light toevoegen voor meer algemene verlichting
+const ambientLight = new THREE.AmbientLight(0xffffff, 2); // Voeg wat ambient light toe
+scene.add(ambientLight);
+
+// Spotlight instellingen
+const spotLight2 = new THREE.SpotLight(0xffffff, 5, 100, Math.PI / 10, 0.5); // Intensiteit verhoogd naar 5
+spotLight2.position.set(0, 20, 20);
 spotLight2.castShadow = true;
-spotLight2.shadow.mapSize.width = 2048;
-spotLight2.shadow.mapSize.height = 2048;
+spotLight2.shadow.mapSize.width = 2048;  
+spotLight2.shadow.mapSize.height = 2048;  
+
+// Vergroot het zichtbare gebied van de spotlight schaduw
+spotLight2.shadow.camera.left = -50;  
+spotLight2.shadow.camera.right = 50;  
+spotLight2.shadow.camera.top = 50;    
+spotLight2.shadow.camera.bottom = -50; 
+spotLight2.shadow.camera.near = 0.1;   
+spotLight2.shadow.camera.far = 100;    
+
 scene.add(spotLight2);
+
 
 // Handle window resize
 window.addEventListener('resize', () => {
@@ -85,35 +117,34 @@ const mouse = new THREE.Vector2();
 // Load GLB model of the sneaker
 const gltfLoader = new GLTFLoader();
 let sneaker;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Voor zachtere schaduwen
 
+// Platform ontvangt schaduw
+platform.receiveShadow = true;
 gltfLoader.load(
   '/sneaker.glb',
   (gltf) => {
     sneaker = gltf.scene;
-    sneaker = gltf.scene;
     sneaker.scale.set(50, 50, 50);
-    sneaker.position.set(0, 4, -1.5); // Adjust height to make it appear floating
-    sneaker.castShadow = true;
+    sneaker.position.set(0, 4, -1.5);
+    sneaker.castShadow = false; // Sneaker werpt schaduwen
 
-
-    scene.add(sneaker);
-
-    // Apply a standard material
-    gltf.scene.traverse((child) => {
+    // Zorg ervoor dat alle delen van de sneaker schaduwen werpen
+    sneaker.traverse((child) => {
       if (child.isMesh) {
-        child.material = new THREE.MeshStandardMaterial({
-          color: 0xFFFFFF,
-          roughness: 0.5,
-
-        });
+        child.castShadow = true; // Schaduw werpen
       }
     });
+
+    scene.add(sneaker);
   },
   undefined,
   (error) => {
     console.error('Error loading model:', error);
   }
 );
+
 
 // Mouse move event listener
 window.addEventListener('mousemove', (event) => {
