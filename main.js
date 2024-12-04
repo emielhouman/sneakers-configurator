@@ -3,18 +3,6 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 
-let orders = []; // Definieer de variabele orders als een lege array
-
-window.onload = async () => {
-  try {
-    const response = await fetch('https://sneakers-api-ouat.onrender.com/api/v1/orders');
-    const data = await response.json();
-    orders = data.data.orders; // Gebruik de variabele orders om de data op te slaan
-    console.log('Fetch request succesful:', orders);
-  } catch (error) {
-    console.error('Fetch request failed:', error);
-  }
-};
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -200,6 +188,7 @@ const sneakerParts = [
 ];
 
 let sneakerPartsIndex = 0;
+const sneakerSettings = {}; // Object to store selected colors, textures, names, and color names for each part
 
 function selectSneakerPart() {
   const partName = document.querySelector('.part__name');
@@ -219,9 +208,12 @@ document.querySelector('.next').addEventListener('click', () => {
   selectSneakerPart();
 });
 
-// Function to give the selected sneaker part a color
-function updateSneakerPart(color, texture) {
+// Function to update sneaker settings
+function updateSneakerPart(color, texture, colorName, textureName) {
   const partName = sneakerParts[sneakerPartsIndex].part;
+  const partDisplayName = sneakerParts[sneakerPartsIndex].name;
+
+  // Update 3D model visuals
   if (sneaker) {
     sneaker.traverse((child) => {
       if (child.isMesh && child.name === partName) {
@@ -235,13 +227,28 @@ function updateSneakerPart(color, texture) {
       }
     });
   }
+
+  // Save color, texture, part name, color name, and texture name in sneakerSettings
+  sneakerSettings[partName] = {
+    color: color,        
+    name: partDisplayName,
+    colorName: colorName,  
+    textureName: textureName 
+  };
+
+  console.log(`Updated part: ${partDisplayName}`);
+  console.log(`Color: ${color}, Texture: ${textureName}`);
 }
 
 const colorOptions = document.querySelectorAll('.color__option');
 colorOptions.forEach((option) => {
   option.addEventListener('click', () => {
-    const color = option.getAttribute('data-color');
-    updateSneakerPart(color, null);
+    const color = option.getAttribute('data-color'); 
+    const colorName = option.querySelector('.color__name').textContent; 
+    
+    // If both color and texture are selected, update together
+    const texture = sneakerSettings[sneakerParts[sneakerPartsIndex].part]?.texture; 
+    updateSneakerPart(color, texture, colorName, texture ? sneakerSettings[sneakerParts[sneakerPartsIndex].part].textureName : null);
   });
 });
 
@@ -249,15 +256,73 @@ const textureOptions = document.querySelectorAll('.texture__option');
 textureOptions.forEach((option) => {
   option.addEventListener('click', () => {
     const texture = option.getAttribute('data-texture');
+    const textureName = option.querySelector('.texture__name') ? option.querySelector('.texture__name').textContent.trim() : option.textContent.trim();
+
+    let selectedTexture = null;
+    
+    // Check which texture is selected and assign the corresponding texture object
     if (texture === 'leather') {
-      updateSneakerPart(null, leatherTexture);
+      selectedTexture = leatherTexture; 
     } else if (texture === 'denim') {
-      updateSneakerPart(null, denimTexture);
+      selectedTexture = denimTexture; 
     } else if (texture === 'crocodile') {
-      updateSneakerPart(null, crocodileTexture);
+      selectedTexture = crocodileTexture; 
+    }
+
+    if (selectedTexture) {
+      // Save texture to sneakerSettings for this part
+      sneakerSettings[sneakerParts[sneakerPartsIndex].part] = {
+        texture: selectedTexture,
+        textureName: textureName
+      };
+
+      // If color is also selected, update together
+      const color = sneakerSettings[sneakerParts[sneakerPartsIndex].part]?.color;
+      updateSneakerPart(color, selectedTexture, null, textureName);
     }
   });
 });
+
+
+document.querySelector('.save').addEventListener('click', async () => {
+  console.log(sneakerSettings);
+
+  // Add missing fields to sneakerData
+  const sneakerData = {
+    order: {
+      sneakerConfigs: sneakerSettings // Add the general color or color you need
+    },
+  };
+
+  // Async function to post data to API
+  async function postData(data) {
+    try {
+      const response = await fetch('https://sneakers-api-ouat.onrender.com/api/v1/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error posting data:", error);
+    }
+  }
+
+  console.log("Sending sneaker data:", sneakerData);
+
+  // Call the postData function and log the response
+  const response = await postData(sneakerData);
+  console.log("Response from API:", response);
+});
+
+
 
 
 // Mouse click event listener
