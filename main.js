@@ -285,45 +285,24 @@ textureOptions.forEach((option) => {
     }
   });
 });
-
-
-document.querySelector('.save').addEventListener('click', async () => {
+document.querySelector('.save').addEventListener('click', () => {
   console.log(sneakerSettings);
 
-  // Add missing fields to sneakerData
+  // Prepare data to be stored in localStorage
   const sneakerData = {
     order: {
-      sneakerConfigs: sneakerSettings // Add the general color or color you need
+      sneakerConfigs: sneakerSettings, // Add the general color or color you need
     },
   };
 
-  // Async function to post data to API
-  async function postData(data) {
-    try {
-      const response = await fetch('https://sneakers-api-ouat.onrender.com/api/v1/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
+  // Save sneakerData to localStorage
+  localStorage.setItem('sneakerData', JSON.stringify(sneakerData));
+  console.log("Sneaker data saved to localStorage:", sneakerData);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error("Error posting data:", error);
-    }
-  }
-
-  console.log("Sending sneaker data:", sneakerData);
-
-  // Call the postData function and log the response
-  const response = await postData(sneakerData);
-  console.log("Response from API:", response);
+  // Redirect to checkout page
+  window.location.href = 'checkout.html';
 });
+
 
 
 

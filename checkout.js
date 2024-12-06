@@ -44,3 +44,36 @@ const cartItems = [
   }
   
   document.addEventListener('DOMContentLoaded', updateCart);
+
+    // Haal de opgeslagen data uit localStorage
+    const sneakerData = JSON.parse(localStorage.getItem('sneakerData'));
+
+    // Controleer of de data bestaat
+    if (sneakerData) {
+      const sneakerConfigs = sneakerData.order.sneakerConfigs;
+      const sneakerDetailsDiv = document.getElementById('sneaker-details');
+
+      // Loop door de configuraties en voeg ze toe aan de pagina
+      for (const part in sneakerConfigs) {
+        if (sneakerConfigs.hasOwnProperty(part)) {
+          const config = sneakerConfigs[part];
+          const partName = config.name;
+          const colorName = config.colorName || 'No color selected';  // Gebruik colorName in plaats van color
+          const textureName = config.textureName || 'No texture selected';
+
+          // Maak een element om de details weer te geven
+          const partDiv = document.createElement('div');
+          partDiv.innerHTML = `
+            <strong>${partName}</strong><br>
+            Color: ${colorName}<br>  <!-- Toon de kleurnaam -->
+            Texture: ${textureName}<br><br>
+          `;
+
+          // Voeg het toe aan de sneaker summary
+          sneakerDetailsDiv.appendChild(partDiv);
+        }
+      }
+    } else {
+      // Als er geen data is opgeslagen, geef een bericht weer
+      document.getElementById('sneaker-details').innerHTML = 'No sneaker data found in localStorage.';
+    }
