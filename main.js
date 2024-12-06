@@ -228,17 +228,18 @@ function updateSneakerPart(color, texture, colorName, textureName) {
     });
   }
 
-  // Save color, texture, part name, color name, and texture name in sneakerSettings
+  // Save only the necessary data in sneakerSettings
   sneakerSettings[partName] = {
-    color: color,        
+    color: color || null,
+    textureName: textureName || null, // Only save the textureName, not the whole object
     name: partDisplayName,
-    colorName: colorName,  
-    textureName: textureName 
+    colorName: colorName || null,
   };
 
   console.log(`Updated part: ${partDisplayName}`);
   console.log(`Color: ${color}, Texture: ${textureName}`);
 }
+
 
 const colorOptions = document.querySelectorAll('.color__option');
 colorOptions.forEach((option) => {
@@ -247,8 +248,9 @@ colorOptions.forEach((option) => {
     const colorName = option.querySelector('.color__name').textContent; 
     
     // If both color and texture are selected, update together
-    const texture = sneakerSettings[sneakerParts[sneakerPartsIndex].part]?.texture; 
-    updateSneakerPart(color, texture, colorName, texture ? sneakerSettings[sneakerParts[sneakerPartsIndex].part].textureName : null);
+    const texture = sneakerSettings[sneakerParts[sneakerPartsIndex].part]?.texture;
+    updateSneakerPart(color, texture, colorName, sneakerSettings[sneakerParts[sneakerPartsIndex].part]?.textureName);
+    
   });
 });
 
@@ -278,7 +280,8 @@ textureOptions.forEach((option) => {
 
       // If color is also selected, update together
       const color = sneakerSettings[sneakerParts[sneakerPartsIndex].part]?.color;
-      updateSneakerPart(color, selectedTexture, null, textureName);
+      updateSneakerPart(color, selectedTexture, sneakerSettings[sneakerParts[sneakerPartsIndex].part]?.colorName, textureName);
+      
     }
   });
 });
