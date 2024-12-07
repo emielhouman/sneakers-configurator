@@ -59,293 +59,698 @@ body {
       color: #000;
     }
     
+/* Main Cart Container Layout */
+.cart-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 24px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+  }
   
-  /* Main Layout for Cart and Info Sections */
-  .cart-container {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px;
-      flex-wrap: nowrap;  /* Fix: 'nowrap' instead of 'no-wrap' */
+  /* Common Section Styles */
+  .cart,
+  .contact-info,
+  .payment-info {
+    background-color: #fff;
+    padding: 24px;
+    border: 1px solid #eaeaea;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 700px;
   }
   
   /* Shopping Cart Section */
   .cart {
-      background-color: #fff;
-      padding: 20px;
-      border: 1px solid #eaeaea;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      width: 100%;  /* Shopping Cart takes up 48% of the container width */
-      max-width: 700px;
-      height: fit-content;
+    flex: 1;
   }
   
-  /* Shopping Cart Title */
   .cart-title {
-      font-size: 24px;
-      font-weight: 700;
-      color: #333;
-      text-align: left;
-      margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+   
   }
   
-  /* Table Layout */
+
   .cart-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-  }
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.cart-table th,
+.cart-table td {
+    padding: 10px;
+    font-size: 14px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.cart-table th {
+    font-weight: 600;
+    color: #555;
+}
+
+.cart-table td {
+    color: #333;
+}
+
   
-  .cart-table th,
-  .cart-table td {
-      padding: 10px;
-      font-size: 14px;
-      text-align: left;
-      border-bottom: 1px solid #f0f0f0;
-  }
-  
-  .cart-table th {
-      font-weight: 600;
-      color: #555;
-  }
-  
-  .cart-table td {
-      color: #333;
-  }
-  
+  /* Cart Table Buttons */
   .cart-table button {
-      background-color: #f7f7f7;
-      border: none;
-      padding: 5px 10px;
-      cursor: pointer;
-      border-radius: 5px;
+    background-color: #ff4d4f;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
   }
   
-  /* Footer Section */
+  .cart-table button:hover {
+    background-color: #d9363e;
+  }
+  
+  /* Cart Footer */
   .cart-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
   }
   
-  .cart-footer .continue-shopping {
-      font-size: 14px;
-      color: #007bff;
-      text-decoration: none;
+  /* Continue Shopping Link */
+  .continue-shopping {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s ease;
   }
   
-  .cart-footer .totals {
-      text-align: right;
-      font-size: 14px;
+  .continue-shopping:hover {
+    text-decoration: underline;
+    color: #0056b3;
   }
   
-  .cart-footer .totals p {
-      margin: 5px 0;
+  /* Totals Section */
+  .totals {
+    text-align: right;
+    font-size: 14px;
   }
   
-  .cart-footer .totals .total-amount {
-      font-size: 16px;
-      font-weight: 700;
-      color: #000;
+  .totals p {
+    margin: 5px 0;
+  }
+  
+  .total-amount {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+  }
+  
+  
+ 
+
+  /* Info Container Layout */
+  .info-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+  }
+  
+  /* Contact Info Section */
+  .contact-info label {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: block;
+  }
+  
+  .contact-info input[type="email"],
+  .contact-info input[type="text"],
+  .contact-info input[type="checkbox"],
+  .contact-info select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  
+  .contact-info input[type="checkbox"] {
+    width: auto;
+    margin-right: 10px;
+  }
+
+  /* Newsletter Container */
+.newsletter-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between checkbox and label */
+    margin-bottom: 15px; /* Add margin below the container */
+  }
+  
+  /* Checkbox Styling */
+  .newsletter-container input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+  
+  /* Label Styling */
+  .newsletter-container label {
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  
+  .shipping-address {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+  
+  .shipping-address input,
+  .state-zip-container select,
+  .state-zip-container input {
+    width: 100%;
+  }
+  
+  .state-zip-container {
+    display: flex;
+    gap: 15px;
   }
   
   /* Payment Info Section */
-  .payment-info {
-      background-color: #fff;
-      padding: 20px;
-      border: 1px solid #eaeaea;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      width: 100%;  /* Payment Info takes up 48% of the container width */
-      min-height: 400px;  /* Ensures the section has the same minimum height */
-      
-     
-  }
-  
-  /* Title for Payment Info Section */
   .payment-info h2 {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
   }
   
-  /* Payment Method Section */
+  .payment-method {
+    margin-bottom: 20px;
+  }
+  
   .payment-method label {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 10px;
-      display: block;
+    font-size: 16px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 10px;
   }
   
   .payment-options {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .payment-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
   
   .payment-option input[type="radio"] {
-      accent-color: #007bff;
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
+    accent-color: #007bff;
+    cursor: pointer;
   }
   
   .payment-option span {
-      font-size: 14px;
-      color: #333;
+    font-size: 14px;
+    color: #333;
   }
   
-  /* Card Details Section */
+  .payment-info input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  
   .card-details {
-      display: flex;
-      gap: 10px;
+    display: flex;
+    gap: 15px;
   }
   
   .card-details div {
-      flex: 1;
-  }
-  
-  /* Input Fields in Payment Info */
-  .payment-info input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
-      color: #333;
-      background-color: #fff;
-      outline: none;
-      box-sizing: border-box;
-  }
-  
-  .payment-info input::placeholder {
-      color: #aaa;
+    flex: 1;
   }
   
   /* Checkout Button */
   .checkout-btn {
-      display: block;
-      width: 100%;
-      background-color: #007bff;
-      color: white;
-      padding: 12px;
-      font-size: 16px;
-      text-align: center;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      margin-top: 10px;
+    display: block;
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
   }
   
   .checkout-btn:hover {
-      background-color: #0056b3;
+    background-color: #0056b3;
   }
   
-  
-  /* Contact Info Section */
-  .contact-info {
-      background-color: #fff;
-      padding: 20px;
-      border: 1px solid #eaeaea;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      width: 100%;  /* Payment Info takes up 48% of the container width */
-      min-height: 400px;  /* Ensures the section has the same minimum height */
-      margin-bottom: 20px;
-     
+ body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
   }
   
-  /* Title for Contact Info */
-  .contact-info label {
-      font-size: 18px;
+  .header {
+    
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #eaeaea;
+    }
+    
+    .logo {
+      font-size: 24px;
       font-weight: 700;
-      color: #333;
-      margin-bottom: 10px;
-      display: block;
-  }
-  
-  /* Email & Checkbox */
-  .contact-info input[type="email"],
-  .contact-info input[type="checkbox"] {
-      width: 95%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+      color: #000;
+    }
+    
+    /* Navbar Styles */
+    .navbar {
+      display: flex;
+      gap: 30px;
+      margin-left: auto;  
+    }
+    
+    .navbar a {
+      text-decoration: none;
       font-size: 14px;
+      font-weight: 500;
       color: #333;
-      background-color: #f9f9f9;
-  }
-  
-  .contact-info input[type="email"]:focus {
-      border-color: #007bff;
-      outline: none;
-      background-color: #fff;
-  }
-  
-  .contact-info input[type="checkbox"] {
-      width: auto;
-      margin-right: 10px;
-      margin-top: 10px;
-  }
-  
-  .contact-info input[type="checkbox"]:checked {
-      background-color: #007bff;
-  }
-  
-  .contact-info input[type="email"]::placeholder {
-      color: #aaa;
-  }
-  
-  .contact-info input[type="email"]:focus::placeholder {
-      color: #007bff;
-  }
-  
-  /* Shipping Address Section */
-  .shipping-address {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 15px;
-  }
-  
-  .shipping-address input {
-      width: 90%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
-      color: #333;
-      background-color: #f9f9f9;
-  }
-  
-  .shipping-address input:focus {
-      border-color: #007bff;
-      outline: none;
-      background-color: #fff;
-  }
-  
-  /* State and Zip Section */
-  .state-zip-container {
+    }
+    
+    .navbar a:hover {
+      color: #000;
+    }
+    
+    /* Icons Section */
+    .icons {
       display: flex;
       gap: 20px;
+      align-items: center;
+      margin-left: 30px
+    }
+    
+    .icon {
+      text-decoration: none;
+      font-size: 16px;
+      color: #333;
+      display: flex;
+      align-items: center;
+    }
+    
+    .icon:hover {
+      color: #000;
+    }
+    
+/* Main Cart Container Layout */
+.cart-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 24px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
   }
   
-  .state-zip-container select,
-  .state-zip-container input {
-      width: 48%;  /* Ensure state and zip fields are side by side */
+  /* Common Section Styles */
+  .cart,
+  .contact-info,
+  .payment-info {
+    background-color: #fff;
+    padding: 24px;
+    border: 1px solid #eaeaea;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 700px;
   }
   
-  /* Phone Input */
-  .shipping-address #phone {
-      width: 90%;  /* Ensure phone input takes up full width */
+  /* Shopping Cart Section */
+  .cart {
+    flex: 1;
+  }
+  
+  .cart-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+   
+  }
+  
+
+  .cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.cart-table th,
+.cart-table td {
+    padding: 10px;
+    font-size: 14px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.cart-table th {
+    font-weight: 600;
+    color: #555;
+}
+
+.cart-table td {
+    color: #333;
+}
+
+  
+  /* Cart Table Buttons */
+  .cart-table button {
+    background-color: #ff4d4f;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .cart-table button:hover {
+    background-color: #d9363e;
+  }
+  
+  /* Cart Footer */
+  .cart-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  /* Continue Shopping Link */
+  .continue-shopping {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  .continue-shopping:hover {
+    text-decoration: underline;
+    color: #0056b3;
+  }
+  
+  /* Totals Section */
+  .totals {
+    text-align: right;
+    font-size: 14px;
+  }
+  
+  .totals p {
+    margin: 5px 0;
+  }
+  
+  .total-amount {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+  }
+  
+  
+ 
+
+  /* Info Container Layout */
+  .info-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+  }
+  
+  /* Contact Info Section */
+  .contact-info label {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: block;
+  }
+  
+  .contact-info input[type="email"],
+  .contact-info input[type="text"],
+  .contact-info input[type="checkbox"],
+  .contact-info select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  
+  .contact-info input[type="checkbox"] {
+    width: auto;
+    margin-right: 10px;
   }
 
+  /* Newsletter Container */
+.newsletter-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between checkbox and label */
+    margin-bottom: 15px; /* Add margin below the container */
+  }
+  
+  /* Checkbox Styling */
+  .newsletter-container input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+  
+  /* Label Styling */
+  .newsletter-container label {
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  
+  .shipping-address {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+  
+  .shipping-address input,
+  .state-zip-container select,
+  .state-zip-container input {
+    width: 100%;
+  }
+  
+  .state-zip-container {
+    display: flex;
+    gap: 15px;
+  }
+  
+  /* Payment Info Section */
+  .payment-info h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  
+  .payment-method {
+    margin-bottom: 20px;
+  }
+  
+  .payment-method label {
+    font-size: 16px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .payment-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .payment-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .payment-option input[type="radio"] {
+    accent-color: #007bff;
+    cursor: pointer;
+  }
+  
+  .payment-option span {
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .payment-info input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  
+  .card-details {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .card-details div {
+    flex: 1;
+  }
+  
+  /* Checkout Button */
+  .checkout-btn {
+    display: block;
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .checkout-btn:hover {
+    background-color: #0056b3;
+  }
+  
+ /* Responsive Header */
+@media (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      padding: 15px 20px;
+      gap: 15px;
+    }
+  
+    .navbar {
+      flex-direction: column;
+      gap: 15px;
+      margin-left: 0;
+    }
+  
+    .icons {
+      margin-left: 0;
+      gap: 10px;
+    }
+  }
+  
+  /* Responsive Cart Container */
+  @media (max-width: 1024px) {
+    .cart-container {
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px;
+    }
+  
+    .cart,
+    .contact-info,
+    .payment-info {
+      max-width: 100%;
+    }
+  }
+  
+  /* Responsive Cart Table */
+  @media (max-width: 600px) {
+    .cart-table th,
+    .cart-table td {
+      font-size: 12px;
+      padding: 8px;
+    }
+  
+    .cart-table button {
+      padding: 5px 8px;
+      font-size: 12px;
+    }
+  
+    .cart-footer {
+      flex-direction: column;
+      gap: 15px;
+      text-align: center;
+    }
+  }
+  
+  /* Responsive Shipping Address */
+  @media (max-width: 768px) {
+    .shipping-address {
+      grid-template-columns: 1fr;
+    }
+  
+    .state-zip-container {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+  
+  /* Responsive Payment Options */
+  @media (max-width: 600px) {
+    .payment-options {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .card-details {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+  
+  /* Responsive Checkout Button */
+  @media (max-width: 480px) {
+    .checkout-btn {
+      padding: 10px;
+      font-size: 14px;
+    }
+  }
   

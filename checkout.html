@@ -20,7 +20,6 @@
           <a href="#" class="icon cart">
             <span class="cart-icon">🛒</span>
           </a>
-          <a href="#" class="icon menu">☰</a>
         </div>
       </header>
 
@@ -60,11 +59,12 @@
                 <form action="#" method="POST">
                   <label for="email">Contact information</label>
                   <input type="email" id="email" name="email" placeholder="Email">
-                  <input type="checkbox" id="newsletter" name="newsletter">
-                  <label for="newsletter">Email me with news and offers</label>
+                  <div class="newsletter-container">
+                    <input type="checkbox" id="newsletter" name="newsletter">
+                    <label for="newsletter">Email me with news and offers</label>
+                  </div>
     
                   <div class="shipping-address">
-                    <label for="first-name">Shipping address</label>
                     <input type="text" id="first-name" name="first-name" placeholder="First name">
                     <input type="text" id="last-name" name="last-name" placeholder="Last name">
                     <input type="text" id="company" name="company" placeholder="Company (optional)">
@@ -90,20 +90,16 @@
                 <label>Payment Method:</label>
                 <div class="payment-options">
                   <label class="payment-option">
-                    <input type="radio" name="payment-method" value="credit-card" checked>
-                    <span>Credit Card</span>
+                    <input type="radio" name="payment-method" value="master-card" checked>
+                    <span>Master Card</span>
                   </label>
                   <label class="payment-option">
-                    <input type="radio" name="payment-method" value="paypal">
-                    <span>PayPal</span>
+                    <input type="radio" name="payment-method" value="American-Express">
+                    <span>American Express</span>
                   </label>
                   <label class="payment-option">
-                    <input type="radio" name="payment-method" value="apple-pay">
-                    <span>Apple Pay</span>
-                  </label>
-                  <label class="payment-option">
-                    <input type="radio" name="payment-method" value="bancontact">
-                    <span>Bancontact</span>
+                    <input type="radio" name="payment-method" value="Visa card">
+                    <span>Visa</span>
                   </label>
                 </div>
               </div>
