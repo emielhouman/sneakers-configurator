@@ -107,3 +107,51 @@ function toggleDetails(index) {
 
 // Update de cart zodra de pagina is geladen
 document.addEventListener('DOMContentLoaded', updateCart);
+
+function collectFormData() {
+  const cartItem = cartItems[0]; // Since there's only one product in your example
+
+  return {
+    sneaker: cartItem.product,
+    size: cartItem.size,
+    price: cartItem.price,
+    amount: cartItem.quantity,
+    configs: cartItem.sneakerConfigs,
+    firstname: document.getElementById('first-name').value,
+    lastname: document.getElementById('last-name').value,
+    telephone: document.getElementById('phone').value,
+    email: document.getElementById('email').value,
+    address: document.getElementById('address').value,
+    status: "Pending" // Default status for a new order
+  };
+}
+
+// Checkout function to send data to API
+async function handleCheckout() {
+  const orderData = collectFormData();
+
+  try {
+    const response = await fetch('https://sneakers-api-ouat.onrender.com/api/v1/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ order: orderData })
+    });
+
+    if (response.ok) {
+      alert('Order confirmed! Thank you for your purchase.');
+    } else {
+      alert('Error processing your order. Please try again.');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Network error. Please try again later.');
+  }
+}
+
+// Attach the handleCheckout function to the checkout button
+document.querySelector('.checkout-btn').addEventListener('click', handleCheckout);
+
+// Call updateCart when the page loads
+document.addEventListener('DOMContentLoaded', updateCart);
