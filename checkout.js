@@ -137,12 +137,15 @@ function collectFormData() {
     configs: cartItem.sneakerConfigs,
     firstname: document.getElementById('first-name').value,
     lastname: document.getElementById('last-name').value,
-    telephone: document.getElementById('phone').value,
+    tel: document.getElementById('phone').value,
     email: document.getElementById('email').value,
     address: fullAddress,
     status: "Pending" // Default status for a new order
   };
 }
+
+
+
 
 // Checkout function to send data to API
 async function handleCheckout() {
