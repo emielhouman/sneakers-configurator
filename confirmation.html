@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmation</title>
+  <link rel="stylesheet" href="confirmation.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">SNEAKER-ORDER</div>
+    <nav class="navbar">
+      <a href="#">Shop</a>
+      <a href="#">Journal</a>
+      <a href="#">About us</a>
+      <a href="#">Contact</a>
+    </nav>
+    <div class="icons">
+      <a href="#" class="icon search">🔍</a>
+      <a href="#" class="icon cart">
+        <span class="cart-icon">🛒</span>
+      </a>
+      <a href="#" class="icon menu">☰</a>
+    </div>
+  </header>
+
+  <section class="thank-you-section">
+    <h1>Thank you!</h1>
+    <p class="confirmation-text">A confirmation has been sent to your email.<br>
+    Since you're here, join our list for discounts!</p>
+
+    <form class="signup-form">
+      <input type="email" placeholder="Email Address" required>
+      <button type="submit">Yes, Sign Me Up!</button>
+    </form>
+    
+    <div class="social-media">
+      <p>Let's Be Friends!</p>
+      <a href="#">🔵</a>
+      <a href="#">🐦</a>
+      <a href="#">📸</a>
+      <a href="#">👻</a>
+    </div>
+  </section>
+
+  <script>
+    // Function to launch confetti
+    function launchConfetti() {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
+
+    // Launch confetti when the page loads
+    window.addEventListener('DOMContentLoaded', launchConfetti);
+  </script>
+
+</body>
+</html>

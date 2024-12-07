@@ -1,0 +1,120 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: #000;
+}
+
+.navbar {
+  display: flex;
+  gap: 30px;
+  margin-left: auto;  
+}
+
+.navbar a {
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.navbar a:hover {
+  color: #000;
+}
+
+.icons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-left: 30px;
+}
+
+.icon {
+  text-decoration: none;
+  font-size: 16px;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.icon:hover {
+  color: #000;
+}
+
+.thank-you-section {
+  margin-top: 100px;
+  padding: 50px;
+}
+
+.thank-you-section h1 {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.confirmation-text {
+  font-size: 18px;
+  margin-bottom: 30px;
+  color: #555;
+}
+
+.signup-form {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.signup-form input {
+  padding: 10px;
+  font-size: 16px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.signup-form button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.signup-form button:hover {
+  background-color: #0056b3;
+}
+
+.social-media p {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.social-media a {
+  font-size: 20px;
+  margin: 0 10px;
+  color: #333;
+  text-decoration: none;
+}
+
+.social-media a:hover {
+  color: #000;
+}

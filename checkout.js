@@ -176,7 +176,7 @@ async function handleCheckout() {
     });
 
     if (response.ok) {
-      alert('Order confirmed! Thank you for your purchase.');
+      window.location.href = 'confirmation.html';
     } else {
       alert('Error processing your order. Please try again.');
     }
