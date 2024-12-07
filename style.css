@@ -124,7 +124,7 @@ body {
   background-color: #007bff; 
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
   margin: 10px 0;
   transition: background-color 0.3s ease;
@@ -141,26 +141,6 @@ body {
 }
 
 
-.checkout{
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #007bff; 
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 10px 0;
-  transition: background-color 0.3s ease;
-  position: fixed;
-  bottom: 50px;
-  right: 35px;
-  margin: 10px 0;
-  display: block;
-}
 
-
-.checkout:hover {
-  background-color: #0056b3;
-}
 
 
