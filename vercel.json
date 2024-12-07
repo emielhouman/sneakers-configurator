@@ -1,12 +1,4 @@
 {
-    "rewrites": [
-      {
-        "source": "/checkout",
-        "destination": "/checkout.html"
-      },
-      {
-        "source": "/confirmation",
-        "destination": "/confirmation.html"
-      }
-    ]
+    "rewrites": []
   }
+  
