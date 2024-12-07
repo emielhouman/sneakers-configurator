@@ -391,6 +391,38 @@ window.addEventListener('click', (event) => {
         }
     }
 });
+
+// Define the selectSize function
+window.selectSize = function(size) {
+  // Save the selected size in localStorage
+  localStorage.setItem('selectedSize', size);
+
+  // Mark the selected button
+  const sizeButtons = document.querySelectorAll('.size-btn');
+  sizeButtons.forEach(button => {
+    if (button.innerText === size) {
+      button.classList.add('selected'); // Add 'selected' class to the clicked button
+    } else {
+      button.classList.remove('selected'); // Remove 'selected' class from the unclicked buttons
+    }
+  });
+};
+
+// Ensure that the page loads with the selected size (if any)
+document.addEventListener('DOMContentLoaded', () => {
+  const selectedSize = localStorage.getItem('selectedSize');
+  
+  // If a size is stored, mark the button with that size as selected
+  if (selectedSize) {
+    const sizeButtons = document.querySelectorAll('.size-btn');
+    sizeButtons.forEach(button => {
+      if (button.innerText === selectedSize) {
+        button.classList.add('selected');
+      }
+    });
+  }
+});
+
 // Animation loop
 let clock = new THREE.Clock();
 

@@ -3,6 +3,8 @@ const cartItems = [];
 // Haal de opgeslagen data uit localStorage
 const sneakerData = JSON.parse(localStorage.getItem('sneakerData'));
 
+const selectedSize = localStorage.getItem('selectedSize') || 'N/A';  // 'N/A' als er geen maat is geselecteerd
+
 // Controleer of sneakerData bestaat en voeg de items toe aan cartItems
 if (sneakerData && sneakerData.order && sneakerData.order.sneakerConfigs) {
   const sneakerConfigs = sneakerData.order.sneakerConfigs;
@@ -10,7 +12,7 @@ if (sneakerData && sneakerData.order && sneakerData.order.sneakerConfigs) {
   // Voeg een schoen toe aan cartItems met de verschillende onderdelen in de details
   cartItems.push({
     product: "Balenciaga Track", // Altijd de naam van de schoen
-    size: 42,                   // Altijd de maat 42
+    size: selectedSize,                
     quantity: 1,                // Altijd 1 hoeveelheid
     price: 120,                 // Altijd prijs van 120 EUR
     parts: sneakerConfigs      // Voeg de verschillende onderdelen toe in de parts
@@ -104,4 +106,4 @@ function toggleDetails(index) {
 }
 
 // Update de cart zodra de pagina is geladen
-document.addEventListener('DOMContentLoaded', updateCart);s
+document.addEventListener('DOMContentLoaded', updateCart);

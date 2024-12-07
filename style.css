@@ -4,6 +4,48 @@ body {
   background-color: #f5f5f5;
 }
 
+h1 {
+  position: absolute;
+  bottom: 160px; /* Plaats de titel iets boven de maatkeuze */
+  left: 20px; /* Zet de titel aan de linkerzijde */
+  font-size: 16px;
+}
+
+.size-selection {
+  position: absolute;
+  bottom: 30px; /* Zet de sectie 30px van de onderkant van de pagina */
+  left: 20px;   /* Zet de sectie 20px vanaf de linkerzijde */
+  padding: 10px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.8); /* Zorgt voor een lichte achtergrond */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Voegt een schaduw toe om de sectie visueel te onderscheiden */
+}
+
+.size-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 kolommen voor de maatkeuze */
+  gap: 10px;
+}
+
+.size-btn {
+  padding: 8px;
+  font-size: 12px; /* Kleinere tekst voor de knoppen */
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f7f7f7;
+  transition: background-color 0.3s ease;
+}
+
+.size-btn:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.size-btn.selected {
+  background-color: #007bff; /* Geselecteerde maat blijft blauw */
+  color: white;
+}
 .configurator__controls {
   width: 100%;
   height: auto; /* Adjusted height */
@@ -139,8 +181,5 @@ body {
 .save:hover {
   background-color: #0056b3;
 }
-
-
-
 
 
