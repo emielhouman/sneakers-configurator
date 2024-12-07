@@ -134,7 +134,7 @@ function collectFormData() {
     size: cartItem.size,
     price: cartItem.price,
     amount: cartItem.quantity,
-    configs: cartItem.sneakerConfigs,
+    sneakerConfigs: cartItem.parts,
     firstname: document.getElementById('first-name').value,
     lastname: document.getElementById('last-name').value,
     tel: document.getElementById('phone').value,
