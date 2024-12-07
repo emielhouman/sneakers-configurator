@@ -111,6 +111,24 @@ document.addEventListener('DOMContentLoaded', updateCart);
 function collectFormData() {
   const cartItem = cartItems[0]; // Since there's only one product in your example
 
+  // Collect all the address components
+  const company = document.getElementById('company').value;
+  const address = document.getElementById('address').value;
+  const apartment = document.getElementById('apartment').value;
+  const city = document.getElementById('city').value;
+  const country = document.getElementById('country').selectedOptions[0].text;
+  const zip = document.getElementById('zip').value;
+
+  // Format the full address
+  const fullAddress = [
+    company,
+    address,
+    apartment,
+    `${city}, ${country} ${zip}`
+  ]
+    .filter((part) => part.trim() !== '') // Remove empty fields
+    .join(', '); // Join with commas
+
   return {
     sneaker: cartItem.product,
     size: cartItem.size,
@@ -121,7 +139,7 @@ function collectFormData() {
     lastname: document.getElementById('last-name').value,
     telephone: document.getElementById('phone').value,
     email: document.getElementById('email').value,
-    address: document.getElementById('address').value,
+    address: fullAddress,
     status: "Pending" // Default status for a new order
   };
 }
