@@ -119,6 +119,13 @@ function collectFormData() {
   const country = document.getElementById('country').selectedOptions[0].text;
   const zip = document.getElementById('zip').value;
 
+
+  // Collect all the payment components (exactly like address)
+  const nameOnCard = document.getElementById('name-on-card').value;
+  const cardNumber = document.getElementById('card-number').value;
+  const expDate = document.getElementById('exp-date').value;
+  const cvv = document.getElementById('cvv').value;
+
   // Format the full address
   const fullAddress = [
     company,
@@ -128,6 +135,15 @@ function collectFormData() {
   ]
     .filter((part) => part.trim() !== '') // Remove empty fields
     .join(', '); // Join with commas
+
+
+    // Format the full payment details
+  const paymentDetails = {
+    nameOnCard: nameOnCard,
+    cardNumber: cardNumber,
+    expDate: expDate,
+    cvv: cvv
+  };
 
   return {
     sneaker: cartItem.product,
@@ -140,6 +156,7 @@ function collectFormData() {
     tel: document.getElementById('phone').value,
     email: document.getElementById('email').value,
     address: fullAddress,
+    payment: paymentDetails, 
     status: "Pending" // Default status for a new order
   };
 }
