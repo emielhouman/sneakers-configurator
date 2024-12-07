@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 
 
+
 // Scene setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -38,43 +39,32 @@ controls.update();
 camera.position.set(0, 10, 20);
 camera.lookAt(0, 0, 0);
 
-// Directional Light instellingen
-const directionalLight = new THREE.DirectionalLight(0xffffff, 5); // Intensiteit verhoogd naar 5
-directionalLight.castShadow = true;
-directionalLight.position.set(0, 20, 20);
-directionalLight.shadow.mapSize.width = 4096; // Schaduwresolutie verhogen
-directionalLight.shadow.mapSize.height = 4096; // Schaduwresolutie verhogen
+// Ambient Light (for global illumination)
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.5); // Verlichting voor de hele scene
+scene.add(ambientLight);
 
-// Vergroot het zichtbare gebied van de schaduw
-directionalLight.shadow.camera.left = -50;  
-directionalLight.shadow.camera.right = 50;  
-directionalLight.shadow.camera.top = 50;    
-directionalLight.shadow.camera.bottom = -50; 
-directionalLight.shadow.camera.near = 0.1;   
-directionalLight.shadow.camera.far = 200;    
+// Directional Light (to simulate sunlight)
+const directionalLight = new THREE.DirectionalLight(0xffffff, 5);
+directionalLight.castShadow = true;
+directionalLight.position.set(0, 10, 0); // Positie van het licht
+
+// Schaduwinstellingen voor Directional Light
+directionalLight.shadow.mapSize.width = 4096; // Verhoog de resolutie van de schaduwmap
+directionalLight.shadow.mapSize.height = 4096; // Verhoog de resolutie van de schaduwmap
+
+// Vergroot het zichtbare gebied van de schaduwcamera
+directionalLight.shadow.camera.left = -50;    // Vergroot de linkerkant van de schaduw
+directionalLight.shadow.camera.right = 50;    // Vergroot de rechterkant van de schaduw
+directionalLight.shadow.camera.top = 50;      // Vergroot de bovenkant van de schaduw
+directionalLight.shadow.camera.bottom = -50;  // Vergroot de onderkant van de schaduw
+directionalLight.shadow.camera.near = 0.1;    // Verklein de afstand vanaf de camera voor schaduwen
+directionalLight.shadow.camera.far = 200;     // Verhoog de verre afstand voor schaduwen
+
+// Pas de bias aan om ongewenste artefacten in de schaduw te voorkomen
+directionalLight.shadow.bias = -0.005; // Kleine negatieve waarde voorkomt artefacten
 
 scene.add(directionalLight);
 
-// Ambient Light toevoegen voor meer algemene verlichting
-const ambientLight = new THREE.AmbientLight(0xffffff, 2); // Voeg wat ambient light toe
-scene.add(ambientLight);
-
-// Spotlight instellingen
-const spotLight2 = new THREE.SpotLight(0xffffff, 5, 100, Math.PI / 10, 0.5); // Intensiteit verhoogd naar 5
-spotLight2.position.set(0, 20, 20);
-spotLight2.castShadow = true;
-spotLight2.shadow.mapSize.width = 2048;  
-spotLight2.shadow.mapSize.height = 2048;  
-
-// Vergroot het zichtbare gebied van de spotlight schaduw
-spotLight2.shadow.camera.left = -50;  
-spotLight2.shadow.camera.right = 50;  
-spotLight2.shadow.camera.top = 50;    
-spotLight2.shadow.camera.bottom = -50; 
-spotLight2.shadow.camera.near = 0.1;   
-spotLight2.shadow.camera.far = 100;    
-
-scene.add(spotLight2);
 
 
 // Handle window resize
@@ -84,19 +74,29 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+// Load the texture
+
+// Initialize the TextureLoader
+const textureLoader2 = new THREE.TextureLoader();
+
+// Load the texture
+const platformTexture = textureLoader2.load('/concrete_layers_diff_4k.jpg');
+
 // Add a rounded platform
 const platformGeometry = new THREE.CylinderGeometry(12, 20, 200, 64);
 const platformMaterial = new THREE.MeshStandardMaterial({
-  //color white
-  color: 0xffffff,
-  metalness: 0,
-  roughness: 0,
+  map: platformTexture, // Use the loaded texture
+  color: 0x999999 , // Apply a dark tint
+  metalness: 0,    // Ensure non-metallic look
+  roughness: 0.6,  // Keep it rough for a realistic feel
 });
 const platform = new THREE.Mesh(platformGeometry, platformMaterial);
 platform.position.set(0, -100, 0);
 scene.add(platform);
-//receive shadow on platform
+
+// Receive shadow on platform
 platform.receiveShadow = true;
+
 
 // Raycaster setup
 const raycaster = new THREE.Raycaster();
@@ -116,12 +116,12 @@ gltfLoader.load(
     sneaker = gltf.scene;
     sneaker.scale.set(50, 50, 50);
     sneaker.position.set(0, 4, -1.5);
-    sneaker.castShadow = false; // Sneaker werpt schaduwen
 
-    // Zorg ervoor dat alle delen van de sneaker schaduwen werpen
+    // Zet castShadow uit voor het hele model
     sneaker.traverse((child) => {
       if (child.isMesh) {
-        child.castShadow = true; // Schaduw werpen
+        child.castShadow = true;  // Schaduwen werpen is uitgeschakeld
+        child.receiveShadow = false;  // Schaduwen ontvangen is ook uitgeschakeld
       }
     });
 
@@ -132,6 +132,7 @@ gltfLoader.load(
     console.error('Error loading model:', error);
   }
 );
+
 
 
 // Mouse move event listener
@@ -198,15 +199,7 @@ function selectSneakerPart() {
   partNumber.textContent = `${sneakerPartsIndex + 1}-${sneakerParts.length}`;
 }
 
-document.querySelector('.prev').addEventListener('click', () => {
-  sneakerPartsIndex = (sneakerPartsIndex - 1 + sneakerParts.length) % sneakerParts.length;
-  selectSneakerPart();
-});
 
-document.querySelector('.next').addEventListener('click', () => {
-  sneakerPartsIndex = (sneakerPartsIndex + 1) % sneakerParts.length;
-  selectSneakerPart();
-});
 
 // Function to update sneaker settings
 function updateSneakerPart(color, texture, colorName, textureName) {
@@ -307,90 +300,153 @@ document.querySelector('.save').addEventListener('click', () => {
 
 
 
-// Mouse click event listener
-window.addEventListener('click', (event) => {
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+function animateCameraToPart(partName) {
+  const targetPosition = new THREE.Vector3();
+  let targetQuaternion = new THREE.Quaternion();
 
-    raycaster.setFromCamera(mouse, camera);
+  const selectedPart = scene.getObjectByName(partName);
+  if (!selectedPart) return;
 
-    const intersects = raycaster.intersectObjects(scene.children, true);
-    const firstIntersect = intersects[0];
+  targetPosition.copy(selectedPart.position);
 
-    for (let i = 0; i < sneakerParts.length; i++) {
-        if (sneakerParts[i].part === firstIntersect.object.name) {
-          sneakerPartsIndex = i;
-          selectSneakerPart(firstIntersect.object.name);
-          const material = firstIntersect.object.material;
-          material.emissive.setHex(0xffffff); // Blauwe kleur
-          material.emissiveIntensity = 0.2; // Intensiteit van de emissive kleur
-          setTimeout(() => {
-            material.emissive.setHex(0x0000ff); // Rode kleur (terug naar de hover kleur)
-            material.emissiveIntensity = 0.3; // Intensiteit van de emissive kleur
-            setTimeout(() => {
-              // Animeer de camera naar het geselecteerde onderdeel
-              const targetPosition = new THREE.Vector3();
-              targetPosition.copy(firstIntersect.object.position);
-              let targetQuaternion = new THREE.Quaternion();
-              if (firstIntersect.object.name === 'outside_1') {
-                targetPosition.x += -5; // Verplaats de camera 10 eenheden naar rechts
-                targetPosition.y += 10; // Verhoog de camera 10 eenheden
-                targetPosition.z += 10; // Verhoog de camera 10 eenheden
-                targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 6); // Draai de camera 30 graden naar rechts
-              } else if (firstIntersect.object.name === 'outside_2') {
-                targetPosition.x += -30; // Verplaats de camera 20 eenheden naar links
-                targetPosition.y += 5; // Houd de hoogte van de camera hetzelfde
-                targetPosition.z -= 10; // Verplaats de camera 10 eenheden naar achteren
-                targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI); // Draai de camera 180 graden rond de y-as
-              } else if (firstIntersect.object.name === 'outside_3') {
-                targetPosition.x += -30; // Verplaats de camera 20 eenheden naar links
-                targetPosition.y += 5; // Houd de hoogte van de camera hetzelfde
-                targetPosition.z -= 10; // Verplaats de camera 10 eenheden naar achteren
-                targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 6); // Draai de camera 30 graden omlaag
-              }else if (firstIntersect.object.name === 'inside') {
-                // Camera positie aanpassen
-                targetPosition.x += 0; // Geen verandering in de x-richting
-                targetPosition.y += 20; // Verplaats de camera omhoog (boven de schoen)
-                targetPosition.z += -5; // Verplaats de camera iets naar achteren
-                
-                // Camera oriëntatie aanpassen om naar beneden te kijken
-                targetQuaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2); // Kijk 90 graden naar beneden
-                targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0); // Geen rotatie rond de y-as
-              }else if (firstIntersect.object.name === 'laces') {
-                targetPosition.x = 0; // Zet de camera recht voor de schoen
-                targetPosition.y = 15; // Verhoog de camera iets meer
-                targetPosition.z = 15; // Verplaats de camera naar voren en uitzoomen
-                targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 4); // Draai de camera 45 graden omhoog
-              } else if (firstIntersect.object.name === 'sole_top') {
-                targetPosition.x += -5; // Verplaats de camera 10 eenheden naar rechts
-                targetPosition.y += 10; // Verhoog de camera 10 eenheden
-                targetPosition.z += 10; // Verhoog de camera 10 eenheden
-                targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 6); // Draai de camera 30 graden naar recht
-                targetQuaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 3); // Kijk van beneden naar boven op de schoen
-              }else if (firstIntersect.object.name === 'sole_bottom') {
-                targetPosition.x += -5; // Verplaats de camera 10 eenheden naar rechts
-                targetPosition.y += 10; // Verhoog de camera 10 eenheden
-                targetPosition.z += 10; // Verhoog de camera 10 eenheden
-                targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 2); // Draai de camera 90 graden naar links
-                targetQuaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 3); // Kijk van beneden naar boven op de schoen
-              }
-              const animationDuration = 1000; // Duur van de animatie in milliseconden
-              const startTime = performance.now();
-              function animateCamera() {
-                const currentTime = performance.now();
-                const progress = (currentTime - startTime) / animationDuration;
-                camera.position.lerpVectors(camera.position, targetPosition, progress);
-                camera.quaternion.slerpQuaternions(camera.quaternion, targetQuaternion, progress);
-                if (progress < 1) {
-                  requestAnimationFrame(animateCamera);
-                }
-              }
-              animateCamera();
-            }, 300); // Wacht 100ms voordat je de emissive kleur uit zet
-          }, 300); // Wacht 100ms voordat je de emissive kleur uit zet
-        }
+  // Stel hier de specifieke camera-instellingen in per onderdeel
+  if (partName === 'outside_1') {
+    targetPosition.x += -5;
+    targetPosition.y += 10;
+    targetPosition.z += 10;
+    targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 6);
+  } else if (partName === 'outside_2') {
+    targetPosition.x += -30;
+    targetPosition.y += 5;
+    targetPosition.z -= 10;
+    targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI);
+  } else if (partName === 'outside_3') {
+    targetPosition.x += -30;
+    targetPosition.y += 5;
+    targetPosition.z -= 10;
+    targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 6);
+  } else if (partName === 'inside') {
+    targetPosition.x += 0;
+    targetPosition.y += 20;
+    targetPosition.z += -5;
+    targetQuaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+  } else if (partName === 'laces') {
+    targetPosition.x = 0;
+    targetPosition.y = 15;
+    targetPosition.z = 15;
+    targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 4);
+  } else if (partName === 'sole_top') {
+    targetPosition.x += -5;
+    targetPosition.y += 10;
+    targetPosition.z += 10;
+    targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 6);
+    targetQuaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 3);
+  } else if (partName === 'sole_bottom') {
+    targetPosition.x += -5;
+    targetPosition.y += 10;
+    targetPosition.z += 10;
+    targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 2);
+    targetQuaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 3);
+  }
+
+  const animationDuration = 1000; // Duur van de animatie in milliseconden
+  const startTime = performance.now();
+
+  function animateCamera() {
+    const currentTime = performance.now();
+    const progress = (currentTime - startTime) / animationDuration;
+
+    camera.position.lerpVectors(camera.position, targetPosition, progress);
+    camera.quaternion.slerpQuaternions(camera.quaternion, targetQuaternion, progress);
+
+    if (progress < 1) {
+      requestAnimationFrame(animateCamera);
     }
+  }
+  animateCamera();
+}
+
+
+document.querySelector('.prev').addEventListener('click', () => {
+  sneakerPartsIndex = (sneakerPartsIndex - 1 + sneakerParts.length) % sneakerParts.length;
+  const currentPart = sneakerParts[sneakerPartsIndex].part;
+  selectSneakerPart(currentPart);
+  animateCameraToPart(currentPart);
+  
+  // Highlight het geselecteerde onderdeel
+  const selectedObject = scene.getObjectByName(currentPart); // Haal het object op via de naam van het onderdeel
+  if (selectedObject) {
+    const material = selectedObject.material;
+    const originalEmissiveColor = material.emissive.getHex(); // Bewaar de originele emissive kleur
+    material.emissive.setHex(0xffffff); // Zet de emissive kleur naar geel (highlight)
+    material.emissiveIntensity = 0.1; // Verhoog de intensiteit van de emissive kleur
+
+    // Zet na een korte tijd de highlight weer terug naar de oorspronkelijke kleur
+    setTimeout(() => {
+      material.emissive.setHex(originalEmissiveColor); // Zet de emissive kleur terug naar de originele kleur
+      material.emissiveIntensity = 0.1; // Zet de emissive intensiteit terug naar normaal
+    }, 300); // 300ms voor het highlight effect
+  }
 });
+
+document.querySelector('.next').addEventListener('click', () => {
+  sneakerPartsIndex = (sneakerPartsIndex + 1) % sneakerParts.length;
+  const currentPart = sneakerParts[sneakerPartsIndex].part;
+  selectSneakerPart(currentPart);
+  animateCameraToPart(currentPart);
+  
+  // Highlight het geselecteerde onderdeel
+  const selectedObject = scene.getObjectByName(currentPart); // Haal het object op via de naam van het onderdeel
+  if (selectedObject) {
+    const material = selectedObject.material;
+    const originalEmissiveColor = material.emissive.getHex(); // Bewaar de originele emissive kleur
+    material.emissive.setHex(0xffffff); // Zet de emissive kleur naar geel (highlight)
+    material.emissiveIntensity = 0.1; // Verhoog de intensiteit van de emissive kleur
+
+    // Zet na een korte tijd de highlight weer terug naar de oorspronkelijke kleur
+    setTimeout(() => {
+      material.emissive.setHex(originalEmissiveColor); // Zet de emissive kleur terug naar de originele kleur
+      material.emissiveIntensity = 0.1; // Zet de emissive intensiteit terug naar normaal
+    }, 300); // 300ms voor het highlight effect
+  }
+});
+
+
+window.addEventListener('click', (event) => {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  const intersects = raycaster.intersectObjects(scene.children, true);
+  const firstIntersect = intersects[0];
+
+  if (firstIntersect) {
+    for (let i = 0; i < sneakerParts.length; i++) {
+      if (sneakerParts[i].part === firstIntersect.object.name) {
+        sneakerPartsIndex = i;
+        const partName = firstIntersect.object.name;
+        selectSneakerPart(partName); // Update de UI of logica
+        animateCameraToPart(partName); // Camera-animatie
+        
+        // Highlight het aangeklikte onderdeel
+        const material = firstIntersect.object.material;
+        const originalEmissiveColor = material.emissive.getHex(); // Bewaar de originele emissive kleur
+        material.emissive.setHex(0xffffff); // Zet de emissive kleur naar geel (highlight)
+        material.emissiveIntensity = 0.1; // Verhoog de intensiteit van de emissive kleur
+
+        // Zet na een korte tijd de highlight weer terug naar de oorspronkelijke kleur
+        setTimeout(() => {
+          material.emissive.setHex(originalEmissiveColor); // Zet de emissive kleur terug naar de originele kleur
+          material.emissiveIntensity = 0.3; // Zet de emissive intensiteit terug naar normaal
+        }, 300); // 300ms voor het highlight effect
+        break;
+      }
+    }
+  }
+});
+
+
 
 // Define the selectSize function
 window.selectSize = function(size) {
