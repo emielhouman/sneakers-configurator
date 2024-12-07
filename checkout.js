@@ -30,44 +30,42 @@ function updateCart() {
   // Voeg het product toe aan de tabel (er is maar 1 product: "Balenciaga Track")
   cartItems.forEach((item, index) => {
     subtotal += item.price * item.quantity; // De prijs van 1 schoen is altijd 120
-
     cartTable.innerHTML += `
-      <tr>
-        <td>${item.product}</td>
-        <td>${item.size}</td>  <!-- Toon de maat -->
-        <td>
-          <!-- Hoeveelheid aanpassen met knoppen -->
-          <div class="quantity-controls">
-            <button onclick="changeQuantity(${index}, -1)">−</button>
-            <span id="quantity-${index}">${item.quantity}</span>
-            <button onclick="changeQuantity(${index}, 1)">+</button>
-          </div>
-        </td>
-        <td>€${item.price}</td>  <!-- Toon de prijs in EUR -->
-        <td><button onclick="removeItem(${index})">×</button></td>
-        <td>
-          <!-- Toevoegen van de 'Show Details' knop -->
-          <button onclick="toggleDetails(${index})" id="toggle-details-btn-${index}" style="padding: 5px 10px; background-color: #007bff; color: white; border: none; cursor: pointer;">Show Details</button>
-        </td>
-      </tr>
- <tr id="details-row-${index}" style="display:none;">
-  <td colspan="6">
-    <div id="details-${index}" class="details-grid" style="display:none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-      ${Object.keys(item.parts).map(partKey => {
-        const part = item.parts[partKey];
-        return `
-          <div style="padding: 10px;">
-            <strong>${part.name}</strong>
-            <p><strong>Color:</strong> ${part.colorName || 'No color selected'}</p>
-            <p><strong>Texture:</strong> ${part.textureName || 'No texture selected'}</p>
-          </div>
-        `;
-      }).join('')}
-    </div>
-  </td>
-</tr>
-    `;
-  });
+    <tr>
+      <td>${item.product}</td>
+      <td>${item.size}</td>  <!-- Show size -->
+      <td>
+        <div class="quantity-controls">
+          <button onclick="changeQuantity(${index}, -1)">−</button>
+          <span id="quantity-${index}">${item.quantity}</span>
+          <button onclick="changeQuantity(${index}, 1)">+</button>
+        </div>
+      </td>
+      <td>€${item.price}</td>  <!-- Show price in EUR -->
+      <td><button onclick="removeItem(${index})">×</button></td>
+      <td>
+        <!-- Add 'Show Details' button -->
+        <button onclick="toggleDetails(${index})" id="toggle-details-btn-${index}" style="padding: 5px 10px; background-color: #007bff; color: white; border: none; cursor: pointer;">Show Details</button>
+      </td>
+    </tr>
+    <tr id="details-row-${index}" style="display:none;">
+      <td colspan="6">
+        <div id="details-${index}" class="details-grid" style="display:none; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+          ${Object.keys(item.parts).map(partKey => {
+            const part = item.parts[partKey];
+            return `
+              <div style="padding: 10px;">
+                <strong>${part.name}</strong>
+                <p><strong>Color:</strong> ${part.colorName || 'No color selected'}</p>
+                <p><strong>Texture:</strong> ${part.textureName || 'No texture selected'}</p>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </td>
+    </tr>
+  `;
+});
 
   // Update de subtotaal en totaal
   subtotalElem.textContent = `€${subtotal.toFixed(2)}`;
@@ -86,24 +84,24 @@ function removeItem(index) {
   updateCart();
 }
 
-// Functie om de details van een onderdeel te tonen/te verbergen
 function toggleDetails(index) {
   const detailsDiv = document.getElementById(`details-${index}`);
   const detailsRow = document.getElementById(`details-row-${index}`);
   const toggleButton = document.getElementById(`toggle-details-btn-${index}`);
 
-  if (detailsDiv.style.display === 'none') {
-    // Toon details
-    detailsDiv.style.display = 'grid'; // We gebruiken grid om de 3 kolommen weer te geven
+  if (detailsDiv.style.display === 'none' || detailsDiv.style.display === '') {
+    // Show details
+    detailsDiv.style.display = 'grid'; // We use grid to show the 3 columns
     detailsRow.style.display = 'table-row';
     toggleButton.textContent = 'Hide Details';
   } else {
-    // Verberg details
+    // Hide details
     detailsDiv.style.display = 'none';
     detailsRow.style.display = 'none';
     toggleButton.textContent = 'Show Details';
   }
 }
+
 
 // Update de cart zodra de pagina is geladen
 document.addEventListener('DOMContentLoaded', updateCart);
