@@ -125,13 +125,13 @@ body {
 }
 
 .size-btn:hover {
-  background-color: #007bff;
-  color: white;
+  background-color: #00ff0059;
+  color: rgb(0, 0, 0);
 }
 
 .size-btn.selected {
-  background-color: #007bff; /* Geselecteerde maat blijft blauw */
-  color: white;
+  background-color: #69ff47; /* Geselecteerde maat blijft blauw */
+  color: rgb(0, 0, 0);
 }
 
 .configurator__controls {
