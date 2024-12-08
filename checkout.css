@@ -390,15 +390,24 @@ body {
 
   .checkout-snapshot-container {
     text-align: center;
-    margin: 20px 0;
+    margin: 30px 0;
+    padding: 20px;
+    border-radius: 12px;
   }
   
   .checkout-snapshot-container img {
     width: 100%;
-    max-width: 300px;
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    margin-top: 10px;
+    max-width: 400px;
+    border: 3px solid #e0e0e0;
+    border-radius: 12px;
+    margin-top: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animatie bij hover */
+  }
+  
+  /* Hover-effect voor de afbeelding */
+  .checkout-snapshot-container img:hover {
+    transform: scale(1.03); /* Licht vergroten bij hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Meer schaduw bij hover */
   }
   
   
