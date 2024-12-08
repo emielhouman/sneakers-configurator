@@ -289,8 +289,7 @@ document.querySelector('.save').addEventListener('click', () => {
   localStorage.setItem('sneakerData', JSON.stringify(sneakerData));
   console.log("Sneaker data saved to localStorage:", sneakerData);
 
-  // Redirect to checkout page
-  window.location.href = 'checkout.html';
+ 
 });
 
 
