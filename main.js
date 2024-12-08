@@ -99,28 +99,102 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Voor zachtere schaduwen
 
 // Platform ontvangt schaduw
 platform.receiveShadow = true;
-gltfLoader.load(
-  '/sneaker.glb',
-  (gltf) => {
-    sneaker = gltf.scene;
-    sneaker.scale.set(50, 50, 50);
-    sneaker.position.set(0, 4, -1.5);
+document.addEventListener('DOMContentLoaded', () => {
+  const sizeButtons = document.querySelectorAll('.size-btn');
 
-    // Zet castShadow uit voor het hele model
-    sneaker.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true;  // Schaduwen werpen is uitgeschakeld
-        sneaker.receiveShadow = false;  // Schaduwen ontvangen is ook uitgeschakeld
+  // Schalen per maat
+  const sizeScaleMap = {
+    '35 ½': { x: 44, y: 44, z: 44 },
+    '36': { x: 45, y: 45, z: 45 },
+    '36 ⅔': { x: 46, y: 46, z: 46},
+    '37 ⅓': { x: 47, y: 47, z: 47 },
+    '38': { x: 48, y: 48, z: 48 },
+    '38 ⅓': { x: 49, y: 49, z: 49 },
+    '39 ⅓': { x: 50, y: 50, z: 50},
+    '40': { x: 51, y: 51, z: 51 },
+    '40 ⅔': { x: 52, y: 52, z: 52 },
+    '41 ⅓': { x: 53, y: 53, z: 53 },
+    '42': { x: 54, y: 54, z: 54 },
+    '42 ⅓': {x: 54.5, y: 54.5, z: 54.5 },
+    '43': { x: 56, y: 56, z: 56 },
+    '43 ⅓': { x: 56.5, y: 56.5, z: 56.5 },
+    '44': { x: 58, y: 58, z: 58 },
+  };
+
+  // Haal de geselecteerde maat op uit localStorage
+  const selectedSize = localStorage.getItem('selectedSize');
+
+  // Functie om de geselecteerde maat te markeren
+  const markSelectedSize = (size) => {
+    sizeButtons.forEach((button) => {
+      if (button.innerText === size) {
+        button.classList.add('selected');
+      } else {
+        button.classList.remove('selected');
       }
     });
+  };
 
-    scene.add(sneaker);
-  },
-  undefined,
-  (error) => {
-    console.error('Error loading model:', error);
+  // Als er een maat is opgeslagen, markeer deze knop als geselecteerd
+  if (selectedSize) {
+    markSelectedSize(selectedSize);
   }
-);
+
+  // Voeg een klik-event listener toe aan elke knop
+  sizeButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const size = button.innerText; // Haal de maat van de aangeklikte knop op
+      console.log('Geselecteerde maat:', size); // Log de geselecteerde maat
+      localStorage.setItem('selectedSize', size); // Sla de geselecteerde maat op
+      markSelectedSize(size); // Update de visuele selectie
+      updateSneakerScale(size); // Pas de schaal aan
+    });
+  });
+
+  // Functie om de schaal van de sneaker bij te werken
+  const updateSneakerScale = (size) => {
+    if (sneaker && sizeScaleMap[size]) {
+      const scale = sizeScaleMap[size];
+      sneaker.scale.set(scale.x, scale.y, scale.z);
+      console.log(`Sneaker schaal aangepast voor maat ${size}:`, scale);
+    } else {
+      console.warn('Schaal of model niet gevonden voor maat:', size);
+    }
+  };
+
+  // Laad het 3D-model
+  const gltfLoader = new GLTFLoader();
+  gltfLoader.load(
+    '/sneaker.glb',
+    (gltf) => {
+      sneaker = gltf.scene;
+
+      // Stel de schaal in op basis van de opgeslagen maat of standaardmaat
+      const size = localStorage.getItem('selectedSize') || '40'; // Default maat 40
+      const scale = sizeScaleMap[size] || sizeScaleMap['40']; // Fallback naar default maat 40
+      sneaker.scale.set(scale.x, scale.y, scale.z);
+
+      sneaker.position.set(0, 4, -1.5);
+
+      // Zet castShadow uit voor het hele model
+      sneaker.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true; // Schaduwen werpen
+          child.receiveShadow = false; // Schaduwen ontvangen uitgeschakeld
+        }
+      });
+
+      // Voeg het model toe aan de scène
+      scene.add(sneaker);
+      console.log('Model geladen en toegevoegd aan scène:', sneaker);
+      captureAndStoreSneakerSnapshot();
+    },
+    undefined,
+    (error) => {
+      console.error('Error loading model:', error);
+    }
+  );
+});
 
 
 
@@ -191,7 +265,65 @@ function selectSneakerPart() {
 
 
 
-// Function to update sneaker settings
+
+async function uploadSnapshotToCloudinary(snapshot) {
+  const cloudinaryUploadUrl = 'https://api.cloudinary.com/v1_1/dgrct85lm/image/upload';
+  const uploadPreset = 'sneaker-configurator'; // Ensure this preset is unsigned in your Cloudinary settings
+
+  try {
+    const formData = new FormData();
+    formData.append('file', snapshot);
+    formData.append('upload_preset', uploadPreset);
+
+    const response = await fetch(cloudinaryUploadUrl, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Cloudinary Response:', data);
+      return data.secure_url; // Return the Cloudinary URL of the uploaded image
+    } else {
+      console.error('Cloudinary upload failed:', await response.text());
+      return null;
+    }
+  } catch (error) {
+    console.error('Error uploading to Cloudinary:', error);
+    return null;
+  }
+}
+
+async function captureAndStoreSneakerSnapshot() {
+  if (!sneaker) return;
+
+  renderer.render(scene, camera);
+  renderer.domElement.toBlob(async (blob) => {
+    if (blob) {
+      const snapshotFile = new File([blob], 'sneaker_snapshot.png', { type: 'image/png' });
+      
+      // Upload to Cloudinary
+      const snapshotUrl = await uploadSnapshotToCloudinary(snapshotFile);
+
+      if (snapshotUrl) {
+        const sneakerData = {
+          order: {
+            sneakerConfigs: sneakerSettings,
+            snapshotUrl: snapshotUrl, // Store the Cloudinary URL
+          },
+        };
+
+        localStorage.setItem('sneakerData', JSON.stringify(sneakerData));
+        console.log('Sneaker snapshot uploaded to Cloudinary:', snapshotUrl);
+      } else {
+        console.error('Failed to upload snapshot to Cloudinary');
+      }
+    }
+  }, 'image/png');
+}
+
+  
+// Functie om sneakerinstellingen bij te werken
 function updateSneakerPart(color, texture, colorName, textureName) {
   const partName = sneakerParts[sneakerPartsIndex].part;
   const partDisplayName = sneakerParts[sneakerPartsIndex].name;
@@ -214,15 +346,17 @@ function updateSneakerPart(color, texture, colorName, textureName) {
   // Save only the necessary data in sneakerSettings
   sneakerSettings[partName] = {
     color: color || null,
-    textureName: textureName || null, // Only save the textureName, not the whole object
+    textureName: textureName || null,
     name: partDisplayName,
     colorName: colorName || null,
   };
 
   console.log(`Updated part: ${partDisplayName}`);
   console.log(`Color: ${color}, Texture: ${textureName}`);
-}
 
+  // Maak een snapshot nadat de sneaker is bijgewerkt
+  captureAndStoreSneakerSnapshot();
+}
 
 const colorOptions = document.querySelectorAll('.color__option');
 colorOptions.forEach((option) => {
@@ -233,7 +367,6 @@ colorOptions.forEach((option) => {
     // If both color and texture are selected, update together
     const texture = sneakerSettings[sneakerParts[sneakerPartsIndex].part]?.texture;
     updateSneakerPart(color, texture, colorName, sneakerSettings[sneakerParts[sneakerPartsIndex].part]?.textureName);
-    
   });
 });
 
@@ -264,24 +397,14 @@ textureOptions.forEach((option) => {
       // If color is also selected, update together
       const color = sneakerSettings[sneakerParts[sneakerPartsIndex].part]?.color;
       updateSneakerPart(color, selectedTexture, sneakerSettings[sneakerParts[sneakerPartsIndex].part]?.colorName, textureName);
-      
     }
   });
 });
 
 document.querySelector('.checkout__btn').addEventListener('click', () => {
-  console.log(sneakerSettings);
-
-  // Prepare data to be stored in localStorage
-  const sneakerData = {
-    order: {
-      sneakerConfigs: sneakerSettings, // Add the general color or color you need
-    },
-  };
-
-  // Save sneakerData to localStorage
-  localStorage.setItem('sneakerData', JSON.stringify(sneakerData));
-  console.log("Sneaker data saved to localStorage:", sneakerData);
+  if (sneaker) {
+    captureAndStoreSneakerSnapshot();
+  }
 });
 
 
@@ -491,6 +614,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+
+
 
 // Animation loop
 let clock = new THREE.Clock();

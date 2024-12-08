@@ -24,6 +24,8 @@
         </div>
       </header>
 
+      
+
       <main class="cart-container">
         <!-- Shopping Cart Section -->
         <section class="cart">
@@ -50,8 +52,15 @@
               <p class="total-amount">Total: <strong id="total">0.00</strong></p>
             </div>
           </div>
-        </section>
 
+          <div class="checkout-snapshot-container">
+            <h2>Your Customized Sneaker</h2>
+            <div id="sneaker-image-container">
+              <!-- Sneaker snapshot will be dynamically inserted here -->
+            </div>
+          </div>
+        </section>
+        
         
 
         <!-- Payment and Shipping Information Section -->
@@ -182,7 +191,7 @@ function updateCart() {
       <td><button onclick="removeItem(${index})">×</button></td>
       <td>
         <!-- Add 'Show Details' button -->
-        <button onclick="toggleDetails(${index})" id="toggle-details-btn-${index}" style="padding: 5px 10px; background-color: #007bff; color: white; border: none; cursor: pointer;">Show Details</button>
+        <button onclick="toggleDetails(${index})" id="toggle-details-btn-${index}" style="padding: 5px 10px; background-color: #69FF47; color: black; border: none; cursor: pointer;">Show Details</button>
       </td>
     </tr>
     <tr id="details-row-${index}" style="display:none;">
@@ -240,11 +249,42 @@ function toggleDetails(index) {
 }
 
 
-// Update de cart zodra de pagina is geladen
-document.addEventListener('DOMContentLoaded', updateCart);
+
+document.addEventListener('DOMContentLoaded', () => {
+  const savedData = localStorage.getItem('sneakerData');
+
+  if (savedData) {
+    const sneakerData = JSON.parse(savedData);
+
+    if (sneakerData.order && sneakerData.order.snapshotUrl) {
+      const snapshotImg = document.createElement('img');
+      snapshotImg.src = sneakerData.order.snapshotUrl; // Use the Cloudinary URL
+      snapshotImg.alt = 'Sneaker Snapshot';
+      snapshotImg.style.maxWidth = '400px'; // Optional: Set a max width for the image
+
+      // Append the snapshot to the container
+      document.getElementById('sneaker-image-container').appendChild(snapshotImg);
+    } else {
+      document.getElementById('sneaker-image-container').innerHTML = '<p>No sneaker configured.</p>';
+    }
+  } else {
+    document.getElementById('sneaker-image-container').innerHTML = '<p>No sneaker data found.</p>';
+  }
+});
+
+
+ 
 
 function collectFormData() {
   const cartItem = cartItems[0]; // Since there's only one product in your example
+  const sneakerData = JSON.parse(localStorage.getItem('sneakerData')) || {};
+  const snapshotUrl = sneakerData.order?.snapshotUrl || null;
+
+  console.log('Retrieved Sneaker Data:', sneakerData);
+  console.log('Snapshot URL:', snapshotUrl);
+
+
+
 
   // Collect all the address components
   const company = document.getElementById('company').value;
@@ -286,6 +326,7 @@ function collectFormData() {
     price: cartItem.price,
     amount: cartItem.quantity,
     sneakerConfigs: cartItem.parts,
+    image: snapshotUrl, // Use the Cloudinary URL
     firstname: document.getElementById('first-name').value,
     lastname: document.getElementById('last-name').value,
     tel: document.getElementById('phone').value,
@@ -302,35 +343,42 @@ function collectFormData() {
 async function handleCheckout() {
   const form = document.getElementById('checkout-form');
 
-  // Check if the form is valid before proceeding
   if (!form.checkValidity()) {
-    form.reportValidity(); // Display native validation messages
-    return; // Stop execution if the form is invalid
+    form.reportValidity();
+    return;
   }
 
-  // Collect form data
   const orderData = collectFormData();
+  console.log('Order Data:', orderData);
+
+  if (!orderData.image) {
+    alert('Snapshot not found. Please configure your sneaker before checkout.');
+    return;
+  }
 
   try {
     const response = await fetch('https://sneakers-api-ouat.onrender.com/api/v1/orders', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ order: orderData })
+      body: JSON.stringify({ order: orderData }),
     });
+
+    console.log('API Response:', response);
 
     if (response.ok) {
       window.location.href = 'confirmation.html';
     } else {
+      const errorText = await response.text();
+      console.error('API Error Response:', errorText);
       alert('Error processing your order. Please try again.');
     }
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Network Error:', error);
     alert('Network error. Please try again later.');
   }
 }
-
 
 // Attach the handleCheckout function to the checkout button
 document.querySelector('.checkout-btn').addEventListener('click', handleCheckout);
