@@ -106,28 +106,101 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Voor zachtere schaduwen
 
 // Platform ontvangt schaduw
 platform.receiveShadow = true;
-gltfLoader.load(
-  '/sneaker.glb',
-  (gltf) => {
-    sneaker = gltf.scene;
-    sneaker.scale.set(50, 50, 50);
-    sneaker.position.set(0, 4, -1.5);
+document.addEventListener('DOMContentLoaded', () => {
+  const sizeButtons = document.querySelectorAll('.size-btn');
 
-    // Zet castShadow uit voor het hele model
-    sneaker.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true;  // Schaduwen werpen is uitgeschakeld
-        sneaker.receiveShadow = false;  // Schaduwen ontvangen is ook uitgeschakeld
+  // Schalen per maat
+  const sizeScaleMap = {
+    '35 ½': { x: 44, y: 44, z: 44 },
+    '36': { x: 45, y: 45, z: 45 },
+    '36 ⅔': { x: 46, y: 46, z: 46},
+    '37 ⅓': { x: 47, y: 47, z: 47 },
+    '38': { x: 48, y: 48, z: 48 },
+    '38 ⅓': { x: 49, y: 49, z: 49 },
+    '39 ⅓': { x: 50, y: 50, z: 50},
+    '40': { x: 51, y: 51, z: 51 },
+    '40 ⅔': { x: 52, y: 52, z: 52 },
+    '41 ⅓': { x: 53, y: 53, z: 53 },
+    '42': { x: 54, y: 54, z: 54 },
+    '42 ⅓': {x: 54.5, y: 54.5, z: 54.5 },
+    '43': { x: 56, y: 56, z: 56 },
+    '43 ⅓': { x: 56.5, y: 56.5, z: 56.5 },
+    '44': { x: 58, y: 58, z: 58 },
+  };
+
+  // Haal de geselecteerde maat op uit localStorage
+  const selectedSize = localStorage.getItem('selectedSize');
+
+  // Functie om de geselecteerde maat te markeren
+  const markSelectedSize = (size) => {
+    sizeButtons.forEach((button) => {
+      if (button.innerText === size) {
+        button.classList.add('selected');
+      } else {
+        button.classList.remove('selected');
       }
     });
+  };
 
-    scene.add(sneaker);
-  },
-  undefined,
-  (error) => {
-    console.error('Error loading model:', error);
+  // Als er een maat is opgeslagen, markeer deze knop als geselecteerd
+  if (selectedSize) {
+    markSelectedSize(selectedSize);
   }
-);
+
+  // Voeg een klik-event listener toe aan elke knop
+  sizeButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const size = button.innerText; // Haal de maat van de aangeklikte knop op
+      console.log('Geselecteerde maat:', size); // Log de geselecteerde maat
+      localStorage.setItem('selectedSize', size); // Sla de geselecteerde maat op
+      markSelectedSize(size); // Update de visuele selectie
+      updateSneakerScale(size); // Pas de schaal aan
+    });
+  });
+
+  // Functie om de schaal van de sneaker bij te werken
+  const updateSneakerScale = (size) => {
+    if (sneaker && sizeScaleMap[size]) {
+      const scale = sizeScaleMap[size];
+      sneaker.scale.set(scale.x, scale.y, scale.z);
+      console.log(`Sneaker schaal aangepast voor maat ${size}:`, scale);
+    } else {
+      console.warn('Schaal of model niet gevonden voor maat:', size);
+    }
+  };
+
+  // Laad het 3D-model
+  const gltfLoader = new GLTFLoader();
+  gltfLoader.load(
+    '/sneaker.glb',
+    (gltf) => {
+      sneaker = gltf.scene;
+
+      // Stel de schaal in op basis van de opgeslagen maat of standaardmaat
+      const size = localStorage.getItem('selectedSize') || '40'; // Default maat 40
+      const scale = sizeScaleMap[size] || sizeScaleMap['40']; // Fallback naar default maat 40
+      sneaker.scale.set(scale.x, scale.y, scale.z);
+
+      sneaker.position.set(0, 4, -1.5);
+
+      // Zet castShadow uit voor het hele model
+      sneaker.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true; // Schaduwen werpen
+          child.receiveShadow = false; // Schaduwen ontvangen uitgeschakeld
+        }
+      });
+
+      // Voeg het model toe aan de scène
+      scene.add(sneaker);
+      console.log('Model geladen en toegevoegd aan scène:', sneaker);
+    },
+    undefined,
+    (error) => {
+      console.error('Error loading model:', error);
+    }
+  );
+});
 
 
 
