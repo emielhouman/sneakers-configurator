@@ -371,8 +371,10 @@ textureOptions.forEach((option) => {
 
 // Event listener voor de "save" knop
 document.querySelector('.save').addEventListener('click', () => {
-  // Maak een snapshot en sla de configuratie op
-   sneaker.rotation.y = Math.PI / 4; // 45 graden
+
+//set sneaker position to outside_1
+sneaker.targetRotation.set(Math.PI / 14, Math.PI / -4, Math.PI / 12, Math.PI / 12);
+
   captureAndStoreSneakerSnapshot();
 });
 
