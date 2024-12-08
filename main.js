@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 
 
@@ -8,6 +7,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 // Scene setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+// Zet de camera extreem dicht bij het doel
+camera.position.set(-25,5, -0.5);  // Camera dichterbij het model plaatsen
+camera.lookAt(0, 0, 0);
 
 // Renderer setup
 const renderer = new THREE.WebGLRenderer();
@@ -28,28 +30,20 @@ const sphereMaterial = new THREE.MeshBasicMaterial({ map: texture360, side: THRE
 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 scene.add(sphere);
 
-// OrbitControls setup
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.25;
-controls.screenSpacePanning = false;
-controls.update();
 
-// Set camera position
-camera.position.set(0, 10, 20);
-camera.lookAt(0, 0, 0);
 
 // Ambient Light (for global illumination)
-const ambientLight = new THREE.AmbientLight(0xffffff, 1.5); // Verlichting voor de hele scene
+const ambientLight = new THREE.AmbientLight(0xffffff, 2); // Verhoog de intensiteit van het ambient light
 scene.add(ambientLight);
 
 // Directional Light (to simulate sunlight)
 const directionalLight = new THREE.DirectionalLight(0xffffff, 5);
 directionalLight.castShadow = true;
-directionalLight.position.set(0, 10, 0); // Positie van het licht
+directionalLight.position.set(-20, 50, -20); // Verhoog de Y-positie van het licht
+directionalLight.target.position.set(0, 0, 0); // Stel de doelpositie van het licht in zodat het niet direct op de schoen schijnt
 
 // Schaduwinstellingen voor Directional Light
-directionalLight.shadow.mapSize.width = 4096; // Verhoog de resolutie van de schaduwmap
+directionalLight.shadow.mapSize.width = 4096;  // Verhoog de resolutie van de schaduwmap
 directionalLight.shadow.mapSize.height = 4096; // Verhoog de resolutie van de schaduwmap
 
 // Vergroot het zichtbare gebied van de schaduwcamera
@@ -61,8 +55,10 @@ directionalLight.shadow.camera.near = 0.1;    // Verklein de afstand vanaf de ca
 directionalLight.shadow.camera.far = 200;     // Verhoog de verre afstand voor schaduwen
 
 // Pas de bias aan om ongewenste artefacten in de schaduw te voorkomen
-directionalLight.shadow.bias = -0.005; // Kleine negatieve waarde voorkomt artefacten
+directionalLight.shadow.bias = -0.01; // Verhoog de bias iets meer om de schaduwen verder weg van het object te plaatsen
 
+
+// Verlichting toevoegen aan de scene
 scene.add(directionalLight);
 
 
@@ -121,7 +117,7 @@ gltfLoader.load(
     sneaker.traverse((child) => {
       if (child.isMesh) {
         child.castShadow = true;  // Schaduwen werpen is uitgeschakeld
-        child.receiveShadow = false;  // Schaduwen ontvangen is ook uitgeschakeld
+        sneaker.receiveShadow = false;  // Schaduwen ontvangen is ook uitgeschakeld
       }
     });
 
@@ -194,6 +190,7 @@ const sneakerSettings = {}; // Object to store selected colors, textures, names,
 function selectSneakerPart() {
   const partName = document.querySelector('.part__name');
   const partNumber = document.querySelector('.part__number');
+  
 
   partName.textContent = sneakerParts[sneakerPartsIndex].name;
   partNumber.textContent = `${sneakerPartsIndex + 1}-${sneakerParts.length}`;
@@ -298,153 +295,181 @@ document.querySelector('.save').addEventListener('click', () => {
 
 
 
+// Functie om de rotatie van de gehele schoen te animeren
+function animateShoeRotation(partName) {
+  const targetRotation = new THREE.Euler();
 
+  const selectedShoe = scene.getObjectByName('sneaker'); // Hier wordt aangenomen dat de hele schoen een object is genaamd 'sneaker'
+  if (!selectedShoe) return;
 
-function animateCameraToPart(partName) {
-  const targetPosition = new THREE.Vector3();
-  let targetQuaternion = new THREE.Quaternion();
-
-  const selectedPart = scene.getObjectByName(partName);
-  if (!selectedPart) return;
-
-  targetPosition.copy(selectedPart.position);
-
-  // Stel hier de specifieke camera-instellingen in per onderdeel
+  // Stel de doelrotatie in op basis van het geselecteerde onderdeel
   if (partName === 'outside_1') {
-    targetPosition.x += -5;
-    targetPosition.y += 10;
-    targetPosition.z += 10;
-    targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 6);
+    targetRotation.set(Math.PI / 14, Math.PI / -4, Math.PI / 12, Math.PI / 12); // Alleen Y-as
   } else if (partName === 'outside_2') {
-    targetPosition.x += -30;
-    targetPosition.y += 5;
-    targetPosition.z -= 10;
-    targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI);
+    targetRotation.set(0, -Math.PI / -4, 0); // Alleen Y-as
   } else if (partName === 'outside_3') {
-    targetPosition.x += -30;
-    targetPosition.y += 5;
-    targetPosition.z -= 10;
-    targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 6);
+    targetRotation.set(0, Math.PI / 5, 0); // Alleen Y-as
   } else if (partName === 'inside') {
-    targetPosition.x += 0;
-    targetPosition.y += 20;
-    targetPosition.z += -5;
-    targetQuaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+    targetRotation.set(Math.PI / -16, Math.PI / 8,Math.PI / 3); // X, Y en Z-assen
   } else if (partName === 'laces') {
-    targetPosition.x = 0;
-    targetPosition.y = 15;
-    targetPosition.z = 15;
-    targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 4);
+    targetRotation.set(Math.PI / 8, Math.PI / -4, Math.PI / 8, Math.PI / 8);
   } else if (partName === 'sole_top') {
-    targetPosition.x += -5;
-    targetPosition.y += 10;
-    targetPosition.z += 10;
-    targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 6);
-    targetQuaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 3);
+    targetRotation.set(0, Math.PI / -4, -Math.PI / -10, Math.PI / 12);; // X, Y en Z-assen
   } else if (partName === 'sole_bottom') {
-    targetPosition.x += -5;
-    targetPosition.y += 10;
-    targetPosition.z += 10;
-    targetQuaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 2);
-    targetQuaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 3);
+    targetRotation.set(0, Math.PI / -4, -Math.PI / 8, Math.PI / 12);; // X, Y en Z-assen
   }
 
   const animationDuration = 1000; // Duur van de animatie in milliseconden
   const startTime = performance.now();
+  const originalRotation = selectedShoe.rotation.clone(); // Bewaar de originele rotatie
 
-  function animateCamera() {
+  function animateRotation() {
     const currentTime = performance.now();
-    const progress = (currentTime - startTime) / animationDuration;
+    const progress = Math.min((currentTime - startTime) / animationDuration, 1);
 
-    camera.position.lerpVectors(camera.position, targetPosition, progress);
-    camera.quaternion.slerpQuaternions(camera.quaternion, targetQuaternion, progress);
+    // Interpoleer de rotatie van de schoen naar de doelrotatie langs alle assen
+    selectedShoe.rotation.x = THREE.MathUtils.lerp(originalRotation.x, targetRotation.x, progress);
+    selectedShoe.rotation.y = THREE.MathUtils.lerp(originalRotation.y, targetRotation.y, progress);
+    selectedShoe.rotation.z = THREE.MathUtils.lerp(originalRotation.z, targetRotation.z, progress);
 
+    // Stop de animatie als de rotatie klaar is
     if (progress < 1) {
-      requestAnimationFrame(animateCamera);
+      requestAnimationFrame(animateRotation);
     }
   }
-  animateCamera();
+
+  animateRotation();
 }
 
 
+// Functie om het geselecteerde onderdeel van de schoen te highlighten
+function highlightSelectedPart(partName) {
+  const selectedObject = scene.getObjectByName(partName);
+  if (selectedObject) {
+    const material = selectedObject.material;
+    const originalEmissiveColor = material.emissive.getHex();
+    material.emissive.setHex(0xffffff); // Zet de emissive kleur naar wit (highlight)
+    material.emissiveIntensity = 0.1;
+
+    setTimeout(() => {
+      material.emissive.setHex(originalEmissiveColor); // Zet de emissive kleur terug naar de originele kleur
+      material.emissiveIntensity = 0.1; // Zet de emissive intensiteit terug naar normaal
+    }, 300);
+  }
+}
+
+// Event listener voor klikken op de "prev" knop
 document.querySelector('.prev').addEventListener('click', () => {
   sneakerPartsIndex = (sneakerPartsIndex - 1 + sneakerParts.length) % sneakerParts.length;
   const currentPart = sneakerParts[sneakerPartsIndex].part;
   selectSneakerPart(currentPart);
-  animateCameraToPart(currentPart);
+  animateShoeRotation(currentPart); // Rotatie van de gehele schoen animeren
   
   // Highlight het geselecteerde onderdeel
-  const selectedObject = scene.getObjectByName(currentPart); // Haal het object op via de naam van het onderdeel
-  if (selectedObject) {
-    const material = selectedObject.material;
-    const originalEmissiveColor = material.emissive.getHex(); // Bewaar de originele emissive kleur
-    material.emissive.setHex(0xffffff); // Zet de emissive kleur naar geel (highlight)
-    material.emissiveIntensity = 0.1; // Verhoog de intensiteit van de emissive kleur
-
-    // Zet na een korte tijd de highlight weer terug naar de oorspronkelijke kleur
-    setTimeout(() => {
-      material.emissive.setHex(originalEmissiveColor); // Zet de emissive kleur terug naar de originele kleur
-      material.emissiveIntensity = 0.1; // Zet de emissive intensiteit terug naar normaal
-    }, 300); // 300ms voor het highlight effect
-  }
+  highlightSelectedPart(currentPart);
 });
 
+// Event listener voor klikken op de "next" knop
 document.querySelector('.next').addEventListener('click', () => {
   sneakerPartsIndex = (sneakerPartsIndex + 1) % sneakerParts.length;
   const currentPart = sneakerParts[sneakerPartsIndex].part;
   selectSneakerPart(currentPart);
-  animateCameraToPart(currentPart);
-  
-  // Highlight het geselecteerde onderdeel
-  const selectedObject = scene.getObjectByName(currentPart); // Haal het object op via de naam van het onderdeel
-  if (selectedObject) {
-    const material = selectedObject.material;
-    const originalEmissiveColor = material.emissive.getHex(); // Bewaar de originele emissive kleur
-    material.emissive.setHex(0xffffff); // Zet de emissive kleur naar geel (highlight)
-    material.emissiveIntensity = 0.1; // Verhoog de intensiteit van de emissive kleur
+  animateShoeRotation(currentPart); // Rotatie van de gehele schoen animeren
 
-    // Zet na een korte tijd de highlight weer terug naar de oorspronkelijke kleur
-    setTimeout(() => {
-      material.emissive.setHex(originalEmissiveColor); // Zet de emissive kleur terug naar de originele kleur
-      material.emissiveIntensity = 0.1; // Zet de emissive intensiteit terug naar normaal
-    }, 300); // 300ms voor het highlight effect
+  // Highlight het geselecteerde onderdeel
+  highlightSelectedPart(currentPart);
+});
+
+// Event listener voor het klikken op een specifiek onderdeel via raycasting
+const parts = ['outside_1', 'outside_2', 'outside_3', 'inside', 'laces', 'sole_top', 'sole_bottom'];
+parts.forEach(part => {
+  const partObject = scene.getObjectByName(part);
+  if (partObject) {
+    partObject.on('click', () => {
+      animateShoeRotation(part); // Rotatie van de gehele schoen bij klikken op een onderdeel
+      highlightSelectedPart(part); // Highlight het geselecteerde onderdeel
+    });
   }
 });
 
+// Stel een lijst van de schoenonderdelen in waarop we willen raycasten
+const shoeParts = ['outside_1', 'outside_2', 'outside_3', 'inside', 'laces', 'sole_top', 'sole_bottom'];
 
+// Raycasting voor muisklikken op een specifiek onderdeel
 window.addEventListener('click', (event) => {
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
   raycaster.setFromCamera(mouse, camera);
 
-  const intersects = raycaster.intersectObjects(scene.children, true);
+  // Zoek alleen naar de onderdelen die in de schoen zitten, niet naar het platform of andere objecten
+  const intersects = raycaster.intersectObjects(shoeParts.map(part => scene.getObjectByName(part)), true);
+
   const firstIntersect = intersects[0];
 
   if (firstIntersect) {
-    for (let i = 0; i < sneakerParts.length; i++) {
-      if (sneakerParts[i].part === firstIntersect.object.name) {
-        sneakerPartsIndex = i;
-        const partName = firstIntersect.object.name;
-        selectSneakerPart(partName); // Update de UI of logica
-        animateCameraToPart(partName); // Camera-animatie
-        
-        // Highlight het aangeklikte onderdeel
-        const material = firstIntersect.object.material;
-        const originalEmissiveColor = material.emissive.getHex(); // Bewaar de originele emissive kleur
-        material.emissive.setHex(0xffffff); // Zet de emissive kleur naar geel (highlight)
-        material.emissiveIntensity = 0.1; // Verhoog de intensiteit van de emissive kleur
+    const partName = firstIntersect.object.name;
 
-        // Zet na een korte tijd de highlight weer terug naar de oorspronkelijke kleur
-        setTimeout(() => {
-          material.emissive.setHex(originalEmissiveColor); // Zet de emissive kleur terug naar de originele kleur
-          material.emissiveIntensity = 0.3; // Zet de emissive intensiteit terug naar normaal
-        }, 300); // 300ms voor het highlight effect
+    // Roep de animatie van de rotatie van de hele schoen aan bij klikken op een onderdeel
+    animateShoeRotation(partName); // Deze regel zorgt ervoor dat de rotatie van de schoen geanimeerd wordt
+
+    // Highlight het aangeklikte onderdeel
+    const material = firstIntersect.object.material;
+    const originalEmissiveColor = material.emissive.getHex(); // Bewaar de originele emissive kleur
+    material.emissive.setHex(0xffffff); // Zet de emissive kleur naar wit (highlight)
+    material.emissiveIntensity = 0.1; // Verhoog de intensiteit van de emissive kleur
+
+    // Zet na een korte tijd de highlight weer terug naar de oorspronkelijke kleur
+    setTimeout(() => {
+      material.emissive.setHex(originalEmissiveColor); // Zet de emissive kleur terug naar de originele kleur
+      material.emissiveIntensity = 0.3; // Zet de emissive intensiteit terug naar normaal
+    }, 300); // 300ms voor het highlight effect
+  }
+});
+
+
+
+
+// Raycasting voor muisklikken op een specifiek onderdeel
+window.addEventListener('click', (event) => {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  // Zoek alleen naar de onderdelen die in de schoen zitten
+  const intersects = raycaster.intersectObjects(shoeParts.map(part => scene.getObjectByName(part)), true);
+
+  const firstIntersect = intersects[0];
+
+  if (firstIntersect) {
+    const partName = firstIntersect.object.name;
+
+    // Update de sneakerPartsIndex en selecteer het juiste onderdeel
+    for (let i = 0; i < sneakerParts.length; i++) {
+      if (sneakerParts[i].part === partName) {
+        sneakerPartsIndex = i;
         break;
       }
     }
+
+    // Roep de animatie van de rotatie van de hele schoen aan bij klikken op een onderdeel
+    animateShoeRotation(partName); // Deze regel zorgt ervoor dat de rotatie van de schoen geanimeerd wordt
+
+    // Highlight het aangeklikte onderdeel
+    const material = firstIntersect.object.material;
+    const originalEmissiveColor = material.emissive.getHex(); // Bewaar de originele emissive kleur
+    material.emissive.setHex(0xffffff); // Zet de emissive kleur naar wit (highlight)
+    material.emissiveIntensity = 0.1; // Verhoog de intensiteit van de emissive kleur
+
+    // Zet na een korte tijd de highlight weer terug naar de oorspronkelijke kleur
+    setTimeout(() => {
+      material.emissive.setHex(originalEmissiveColor); // Zet de emissive kleur terug naar de originele kleur
+      material.emissiveIntensity = 0.3; // Zet de emissive intensiteit terug naar normaal
+    }, 300); // 300ms voor het highlight effect
   }
 });
+
 
 
 
@@ -494,7 +519,7 @@ function animate() {
     sneaker.position.y = 4 + Math.sin(elapsedTime * 2) * 0.5; // Frequentie en amplitude aanpassen
   }
 
-  controls.update();
+
   renderer.render(scene, camera);
 }
 
