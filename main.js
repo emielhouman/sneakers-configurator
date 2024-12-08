@@ -276,7 +276,7 @@ function captureAndStoreSneakerSnapshot() {
   renderer.render(scene, camera); // Render de huidige scène
 
   // Maak een snapshot als base64 PNG-afbeelding
-  const snapshot = renderer.domElement.toDataURL('image/png');
+  const snapshot = renderer.domElement.toDataURL('image/jpeg', 0.7); 
 
   // Bereid de sneakergegevens voor om op te slaan
   const sneakerData = {
