@@ -50,7 +50,13 @@
             </div>
           </div>
         </section>
-
+        
+        <div class="checkout-snapshot-container">
+          <h2>Your Customized Sneaker</h2>
+          <div id="sneaker-image-container">
+            <!-- Sneaker snapshot will be dynamically inserted here -->
+          </div>
+        </div>
         
 
         <!-- Payment and Shipping Information Section -->
@@ -242,6 +248,27 @@ function toggleDetails(index) {
 // Update de cart zodra de pagina is geladen
 document.addEventListener('DOMContentLoaded', updateCart);
 
+document.addEventListener('DOMContentLoaded', () => {
+    const savedData = localStorage.getItem('sneakerData');
+
+    if (savedData) {
+      const sneakerData = JSON.parse(savedData);
+
+      if (sneakerData.order && sneakerData.order.snapshot) {
+        const snapshotImg = document.createElement('img');
+        snapshotImg.src = sneakerData.order.snapshot;
+        snapshotImg.alt = 'Sneaker Snapshot';
+
+        // Append the snapshot to the container
+        document.getElementById('sneaker-image-container').appendChild(snapshotImg);
+      } else {
+        document.getElementById('sneaker-image-container').innerHTML = '<p>No sneaker configured.</p>';
+      }
+    } else {
+      document.getElementById('sneaker-image-container').innerHTML = '<p>No sneaker data found.</p>';
+    }
+  });
+
 function collectFormData() {
   const cartItem = cartItems[0]; // Since there's only one product in your example
 
@@ -329,6 +356,7 @@ async function handleCheckout() {
     alert('Network error. Please try again later.');
   }
 }
+
 
 
 // Attach the handleCheckout function to the checkout button

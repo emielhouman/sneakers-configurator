@@ -198,7 +198,27 @@ function selectSneakerPart() {
 
 
 
-// Function to update sneaker settings
+// Functie om een snapshot te maken en op te slaan in localStorage
+function captureAndStoreSneakerSnapshot() {
+  renderer.render(scene, camera); // Render de huidige scène
+
+  // Maak een snapshot als base64 PNG-afbeelding
+  const snapshot = renderer.domElement.toDataURL('image/png');
+
+  // Bereid de sneakergegevens voor om op te slaan
+  const sneakerData = {
+    order: {
+      sneakerConfigs: sneakerSettings,
+      snapshot: snapshot,
+    },
+  };
+
+  // Sla de gegevens op in localStorage
+  localStorage.setItem('sneakerData', JSON.stringify(sneakerData));
+  console.log("Sneaker snapshot en data opgeslagen in localStorage:", sneakerData);
+}
+
+// Functie om sneakerinstellingen bij te werken
 function updateSneakerPart(color, texture, colorName, textureName) {
   const partName = sneakerParts[sneakerPartsIndex].part;
   const partDisplayName = sneakerParts[sneakerPartsIndex].name;
@@ -221,15 +241,17 @@ function updateSneakerPart(color, texture, colorName, textureName) {
   // Save only the necessary data in sneakerSettings
   sneakerSettings[partName] = {
     color: color || null,
-    textureName: textureName || null, // Only save the textureName, not the whole object
+    textureName: textureName || null,
     name: partDisplayName,
     colorName: colorName || null,
   };
 
   console.log(`Updated part: ${partDisplayName}`);
   console.log(`Color: ${color}, Texture: ${textureName}`);
-}
 
+  // Maak een snapshot nadat de sneaker is bijgewerkt
+  captureAndStoreSneakerSnapshot();
+}
 
 const colorOptions = document.querySelectorAll('.color__option');
 colorOptions.forEach((option) => {
@@ -240,7 +262,6 @@ colorOptions.forEach((option) => {
     // If both color and texture are selected, update together
     const texture = sneakerSettings[sneakerParts[sneakerPartsIndex].part]?.texture;
     updateSneakerPart(color, texture, colorName, sneakerSettings[sneakerParts[sneakerPartsIndex].part]?.textureName);
-    
   });
 });
 
@@ -271,26 +292,16 @@ textureOptions.forEach((option) => {
       // If color is also selected, update together
       const color = sneakerSettings[sneakerParts[sneakerPartsIndex].part]?.color;
       updateSneakerPart(color, selectedTexture, sneakerSettings[sneakerParts[sneakerPartsIndex].part]?.colorName, textureName);
-      
     }
   });
 });
+
+// Event listener voor de "save" knop
 document.querySelector('.save').addEventListener('click', () => {
-  console.log(sneakerSettings);
-
-  // Prepare data to be stored in localStorage
-  const sneakerData = {
-    order: {
-      sneakerConfigs: sneakerSettings, // Add the general color or color you need
-    },
-  };
-
-  // Save sneakerData to localStorage
-  localStorage.setItem('sneakerData', JSON.stringify(sneakerData));
-  console.log("Sneaker data saved to localStorage:", sneakerData);
-
- 
+  // Maak een snapshot en sla de configuratie op
+  captureAndStoreSneakerSnapshot();
 });
+
 
 
 
@@ -472,6 +483,7 @@ window.addEventListener('click', (event) => {
 
 
 
+
 // Define the selectSize function
 window.selectSize = function(size) {
   // Save the selected size in localStorage
@@ -502,6 +514,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+
+
 
 // Animation loop
 let clock = new THREE.Clock();

@@ -387,6 +387,20 @@ body {
       text-align: center;
     }
   }
+
+  .checkout-snapshot-container {
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .checkout-snapshot-container img {
+    width: 100%;
+    max-width: 300px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+  
   
   /* Responsive Shipping Address */
   @media (max-width: 768px) {
