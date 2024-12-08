@@ -1,14 +1,12 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-
-
-
 // Scene setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-// Zet de camera extreem dicht bij het doel
-camera.position.set(-25,5, -0.5);  // Camera dichterbij het model plaatsen
+
+// Camera setup
+camera.position.set(-25, 5, -0.5);
 camera.lookAt(0, 0, 0);
 
 // Renderer setup
@@ -30,10 +28,8 @@ const sphereMaterial = new THREE.MeshBasicMaterial({ map: texture360, side: THRE
 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 scene.add(sphere);
 
-
-
 // Ambient Light (for global illumination)
-const ambientLight = new THREE.AmbientLight(0xffffff, 2); // Verhoog de intensiteit van het ambient light
+const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
 
 // Directional Light (to simulate sunlight)
@@ -57,11 +53,8 @@ directionalLight.shadow.camera.far = 200;     // Verhoog de verre afstand voor s
 // Pas de bias aan om ongewenste artefacten in de schaduw te voorkomen
 directionalLight.shadow.bias = -0.01; // Verhoog de bias iets meer om de schaduwen verder weg van het object te plaatsen
 
-
 // Verlichting toevoegen aan de scene
 scene.add(directionalLight);
-
-
 
 // Handle window resize
 window.addEventListener('resize', () => {
@@ -111,21 +104,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Schalen per maat
   const sizeScaleMap = {
-    '35 ½': { x: 44, y: 44, z: 44 },
+    '35.5': { x: 44, y: 44, z: 44 },
     '36': { x: 45, y: 45, z: 45 },
-    '36 ⅔': { x: 46, y: 46, z: 46},
-    '37 ⅓': { x: 47, y: 47, z: 47 },
+    '36.5': { x: 46, y: 46, z: 46},
+    '37.5': { x: 47, y: 47, z: 47 },
     '38': { x: 48, y: 48, z: 48 },
-    '38 ⅓': { x: 49, y: 49, z: 49 },
-    '39 ⅓': { x: 50, y: 50, z: 50},
+    '38.5': { x: 49, y: 49, z: 49 },
+    '39.5': { x: 50, y: 50, z: 50},
     '40': { x: 51, y: 51, z: 51 },
-    '40 ⅔': { x: 52, y: 52, z: 52 },
-    '41 ⅓': { x: 53, y: 53, z: 53 },
+    '40.5': { x: 52, y: 52, z: 52 },
+    '41.5': { x: 53, y: 53, z: 53 },
     '42': { x: 54, y: 54, z: 54 },
-    '42 ⅓': {x: 54.5, y: 54.5, z: 54.5 },
+    '42.5': {x: 54.5, y: 54.5, z: 54.5 },
     '43': { x: 56, y: 56, z: 56 },
-    '43 ⅓': { x: 56.5, y: 56.5, z: 56.5 },
+    '43.5': { x: 56.5, y: 56.5, z: 56.5 },
     '44': { x: 58, y: 58, z: 58 },
+    '45': { x: 59, y: 59, z: 59 },
+    '46': { x: 60, y: 60, z: 60 },
+
   };
 
   // Haal de geselecteerde maat op uit localStorage
@@ -408,7 +404,7 @@ textureOptions.forEach((option) => {
   });
 });
 
-document.querySelector('.save').addEventListener('click', () => {
+document.querySelector('.checkout__btn').addEventListener('click', () => {
   if (sneaker) {
     captureAndStoreSneakerSnapshot();
   }
@@ -591,10 +587,6 @@ window.addEventListener('click', (event) => {
   }
 });
 
-
-
-
-
 // Define the selectSize function
 window.selectSize = function(size) {
   // Save the selected size in localStorage
@@ -625,9 +617,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-
-
-
 
 // Animation loop
 let clock = new THREE.Clock();

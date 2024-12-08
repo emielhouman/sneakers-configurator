@@ -1,78 +1,161 @@
 body {
   margin: 0;
   font-family: 'Helvetica', sans-serif;
-  background-color: #f5f5f5;
+  background-color: #ffffff;
 }
 
-h1 {
+.header {
+  left: 0;
+  top: 0;
+  width: 100%;
+  position: fixed;
+  z-index: 999;
+}
+
+.header__content {
+  padding: 1.85rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.logo__wrapper {
+  width: 15rem;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+}
+
+.checkout__btn--wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: .5rem 2.85rem;
+  border-radius: 5rem;
+  border: .15rem solid #b8b8b8;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.checkout__btn {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #000;
+  letter-spacing: .01rem;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.main {
+  left: 0;
+  bottom: 0;
+  z-index: 999;
+  position: fixed;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sizes__content {
+  margin: 1.85rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  position: relative;
+}
+
+.sizes__btn--wrapper {
+  width: 10rem;
+  height: 5rem;
+  display: flex;
+  justify-content: center;
+  justify-self: end;
+  align-items: center;
+  border-radius: 5rem;
+  border: .15rem solid #b8b8b8;
+  background-color: #fff;
+  cursor: pointer;
+  z-index: 1;
   position: absolute;
-  bottom: 160px; /* Plaats de titel iets boven de maatkeuze */
-  left: 20px; /* Zet de titel aan de linkerzijde */
-  font-size: 16px;
 }
 
-.size-selection {
+.sizes__btn {
+  width: 100%;
+  height: 100%;
+}
+
+.sizes__selection {
+  padding: 1.5rem;
+  border: .15rem solid #b8b8b8;
+  border-radius: .5rem;
+  background-color: #fff;
+  display: flex;
+  gap: 1.5rem;
+  flex-direction: column;
+  z-index: 2;
   position: absolute;
-  bottom: 30px; /* Zet de sectie 30px van de onderkant van de pagina */
-  left: 20px;   /* Zet de sectie 20px vanaf de linkerzijde */
-  padding: 10px;
-  border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.8); /* Zorgt voor een lichte achtergrond */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Voegt een schaduw toe om de sectie visueel te onderscheiden */
 }
 
-.size-grid {
+.sizes__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sizes-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 5 kolommen voor de maatkeuze */
-  gap: 10px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
 }
 
 .size-btn {
-  padding: 8px;
-  font-size: 12px; /* Kleinere tekst voor de knoppen */
+  font-size: .85rem;
+  padding: .5rem 1.25rem;
   cursor: pointer;
-  border: 1px solid #ccc;
+  border: .1rem solid #b8b8b8;
   border-radius: 4px;
-  background-color: #f7f7f7;
+  background-color: #fff;
   transition: background-color 0.3s ease;
 }
 
 .size-btn:hover {
-  background-color: #007bff;
-  color: white;
+  background-color: #00ff0059;
+  color: rgb(0, 0, 0);
 }
 
 .size-btn.selected {
-  background-color: #007bff; /* Geselecteerde maat blijft blauw */
-  color: white;
+  background-color: #69ff47; /* Geselecteerde maat blijft blauw */
+  color: rgb(0, 0, 0);
 }
+
 .configurator__controls {
   width: 100%;
-  height: auto; /* Adjusted height */
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  z-index: 999;
   color: black;
-  background-color: rgb(250, 250, 250);
-  box-shadow: 0 -5px 25px #00000080;
-  padding: 1rem;
+  background-color: white;
+  box-shadow: 0 -.5rem 1rem rgba(0, 0, 0, .8);
+  padding: 1.65rem;
   gap: 1.25rem;
 }
 
 .selected__part {
   display: grid;
   grid-template-areas: "prevArrow sneakerPart nextArrow";
-  margin: 1.85rem 0 .5rem;
+  margin-bottom: .85rem;
 }
 
 .part__title {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   text-align: center;
   width: 20rem;
   grid-area: sneakerPart;
@@ -157,29 +240,6 @@ h1 {
   font-size: .85rem;
   letter-spacing: .05rem;
   text-transform: uppercase;
-}
-
-
-.save {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #007bff; 
-  color: white;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  margin: 10px 0;
-  transition: background-color 0.3s ease;
-  position: fixed;
-  bottom: 115px;
-  right: 40px;
-  margin: 10px 0;
-  display: block;
-}
-
-
-.save:hover {
-  background-color: #0056b3;
 }
 
 
