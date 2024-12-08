@@ -3,105 +3,117 @@
 
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vite App</title>
+  <title>SWEAR Sneakers - Configurator</title>
   <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
-
-
-  <div class="configurator__controls">
-
-    <h1>Select your shoe size</h1>
-    <div class="size-selection">
-      <div class="size-grid">
-        <button class="size-btn" onclick="selectSize('35 ½')">35 ½</button>
-        <button class="size-btn" onclick="selectSize('36')">36</button>
-        <button class="size-btn" onclick="selectSize('36 ⅔')">36 ⅔</button>
-        <button class="size-btn" onclick="selectSize('37 ⅓')">37 ⅓</button>
-        <button class="size-btn" onclick="selectSize('38')">38</button>
-        <button class="size-btn" onclick="selectSize('38 ⅓')">38 ⅓</button>
-        <button class="size-btn" onclick="selectSize('39 ⅓')">39 ⅓</button>
-        <button class="size-btn" onclick="selectSize('40')">40</button>
-        <button class="size-btn" onclick="selectSize('40 ⅔')">40 ⅔</button>
-        <button class="size-btn" onclick="selectSize('41 ⅓')">41 ⅓</button>
-        <button class="size-btn" onclick="selectSize('42')">42</button>
-        <button class="size-btn" onclick="selectSize('42 ⅓')">42 ⅓</button>
-        <button class="size-btn" onclick="selectSize('43')">43</button>
-        <button class="size-btn" onclick="selectSize('43 ⅓')">43 ⅓</button>
-        <button class="size-btn" onclick="selectSize('44')">44</button>
+  <header class="header">
+    <div class="header__content">
+      <div class="logo__wrapper">
+        <img class="logo" src="/swear-logo.png" alt="SWEAR Logo">
+      </div>
+      <div class="checkout__btn--wrapper">
+        <a class="checkout__btn" href="checkout.html">Checkout</a>
       </div>
     </div>
-  
-    <div class="selected__part">
-      <h2 class="part__title">
-        <span class="part__name">Tip</span>
-        <span class="part__number">1-7</span>
-      </h2>
-      <svg class="part__arrow prev" viewbox="0 0 24 24" width="24px" height="24px" fill="none">
-        <path stroke="currentColor" stroke-width="2" d="M11.021 18.967L4.055 12l6.966-6.967M4 12h17"></path>
-      </svg>
-      <svg class="part__arrow next" viewbox="0 0 24 24" width="24px" height="24px" fill="none">
-        <path stroke="currentColor" stroke-width="2" d="M12.979 18.967L19.945 12 12.98 5.033M20 12H3"></path>
-      </svg>
-    </div>
-    <div class="textures__options">
-      <div class="texture__option" data-texture="leather">
-        <span class="texture__name">Leather</span>
-      </div>
-      <div class="texture__option" data-texture="crocodile">
-        <span class="texture__name">Crocodile</span>
-      </div>
-      <div class="texture__option" data-texture="denim">
-        <span class="texture__name">Denim</span>
-      </div>
-    </div>
-    <div class="colors__options">
-      <div class="color__option" data-color="#41B8CF">
-        <div class="color__wrapper">
-          <div class="color__fill" style="background-color: #41B8CF;"></div>
+  </header>
+  <main class="main">
+    <div class="sizes__content">
+      <button class="sizes__btn--wrapper">
+        <img class="sizes__btn" src="/shoe-size.svg" alt="SWEAR Logo">
+      </button>
+      <div class="sizes__selection">
+        <div class="sizes__head">
+          <span class="sizes__title">Select Size</span>
+          <button class="close-button" @click="closePopup">&times;</button>
         </div>
-        <span class="color__name">Blue</span>
-      </div>
-      <div class="color__option" data-color="#A71324">
-        <div class="color__wrapper">
-          <div class="color__fill" style="background-color: #A71324;"></div>
+        <div class="sizes-grid">
+          <button class="size-btn" onclick="selectSize('36')">36</button>
+          <button class="size-btn" onclick="selectSize('36.5')">36.5</button>
+          <button class="size-btn" onclick="selectSize('37')">37.5</button>
+          <button class="size-btn" onclick="selectSize('38')">38</button>
+          <button class="size-btn" onclick="selectSize('38.5')">38.5</button>
+          <button class="size-btn" onclick="selectSize('39')">39</button>
+          <button class="size-btn" onclick="selectSize('40')">40</button>
+          <button class="size-btn" onclick="selectSize('40.5')">40.5</button>
+          <button class="size-btn" onclick="selectSize('41')">41</button>
+          <button class="size-btn" onclick="selectSize('41.5')">41.5</button>
+          <button class="size-btn" onclick="selectSize('42')">42</button>
+          <button class="size-btn" onclick="selectSize('42.5')">42.5</button>
+          <button class="size-btn" onclick="selectSize('43')">43</button>
+          <button class="size-btn" onclick="selectSize('44')">44</button>
+          <button class="size-btn" onclick="selectSize('45')">45</button>
+          <button class="size-btn" onclick="selectSize('46')">46</button>
         </div>
-        <span class="color__name">Red</span>
-      </div>
-      <div class="color__option" data-color="#E68FAC">
-        <div class="color__wrapper">
-          <div class="color__fill" style="background-color: #E68FAC;"></div>
-        </div>
-        <span class="color__name">Pink</span>
-      </div>
-      <div class="color__option" data-color="#424E5A">
-        <div class="color__wrapper">
-          <div class="color__fill" style="background-color: #424E5A;"></div>
-        </div>
-        <span class="color__name">Grey</span>
-      </div>
-      <div class="color__option" data-color="#F5C900">
-        <div class="color__wrapper">
-          <div class="color__fill" style="background-color: #F5C900;"></div>
-        </div>
-        <span class="color__name">Yellow</span>
-      </div>
-      <div class="color__option" data-color="#DB4A0E">
-        <div class="color__wrapper">
-          <div class="color__fill" style="background-color: #DB4A0E;"></div>
-        </div>
-        <span class="color__name">Orange</span>
       </div>
     </div>
-    <div>
-      <button class="save" onclick="window.location.href='checkout.html'">Proceed to checkout</button>
-
+    <div class="configurator__controls">
+      <div class="selected__part">
+        <h2 class="part__title">
+          <span class="part__name">Tip</span>
+          <span class="part__number">1-7</span>
+        </h2>
+        <svg class="part__arrow prev" viewbox="0 0 24 24" width="24px" height="24px" fill="none">
+          <path stroke="currentColor" stroke-width="2" d="M11.021 18.967L4.055 12l6.966-6.967M4 12h17"></path>
+        </svg>
+        <svg class="part__arrow next" viewbox="0 0 24 24" width="24px" height="24px" fill="none">
+          <path stroke="currentColor" stroke-width="2" d="M12.979 18.967L19.945 12 12.98 5.033M20 12H3"></path>
+        </svg>
+      </div>
+      <div class="textures__options">
+        <div class="texture__option" data-texture="leather">
+          <span class="texture__name">Leather</span>
+        </div>
+        <div class="texture__option" data-texture="crocodile">
+          <span class="texture__name">Crocodile</span>
+        </div>
+        <div class="texture__option" data-texture="denim">
+          <span class="texture__name">Denim</span>
+        </div>
+      </div>
+      <div class="colors__options">
+        <div class="color__option" data-color="#41B8CF">
+          <div class="color__wrapper">
+            <div class="color__fill" style="background-color: #41B8CF;"></div>
+          </div>
+          <span class="color__name">Blue</span>
+        </div>
+        <div class="color__option" data-color="#A71324">
+          <div class="color__wrapper">
+            <div class="color__fill" style="background-color: #A71324;"></div>
+          </div>
+          <span class="color__name">Red</span>
+        </div>
+        <div class="color__option" data-color="#E68FAC">
+          <div class="color__wrapper">
+            <div class="color__fill" style="background-color: #E68FAC;"></div>
+          </div>
+          <span class="color__name">Pink</span>
+        </div>
+        <div class="color__option" data-color="#424E5A">
+          <div class="color__wrapper">
+            <div class="color__fill" style="background-color: #424E5A;"></div>
+          </div>
+          <span class="color__name">Grey</span>
+        </div>
+        <div class="color__option" data-color="#F5C900">
+          <div class="color__wrapper">
+            <div class="color__fill" style="background-color: #F5C900;"></div>
+          </div>
+          <span class="color__name">Yellow</span>
+        </div>
+        <div class="color__option" data-color="#DB4A0E">
+          <div class="color__wrapper">
+            <div class="color__fill" style="background-color: #DB4A0E;"></div>
+          </div>
+          <span class="color__name">Orange</span>
+        </div>
+      </div>
     </div>
-    
-  </div>
+  </main>
   <script type="module" src="./main.js"></script>
 </body>
 

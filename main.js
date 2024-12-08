@@ -1,14 +1,12 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-
-
-
 // Scene setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-// Zet de camera extreem dicht bij het doel
-camera.position.set(-25,5, -0.5);  // Camera dichterbij het model plaatsen
+
+// Camera setup
+camera.position.set(-25, 5, -0.5);
 camera.lookAt(0, 0, 0);
 
 // Renderer setup
@@ -30,10 +28,8 @@ const sphereMaterial = new THREE.MeshBasicMaterial({ map: texture360, side: THRE
 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 scene.add(sphere);
 
-
-
 // Ambient Light (for global illumination)
-const ambientLight = new THREE.AmbientLight(0xffffff, 2); // Verhoog de intensiteit van het ambient light
+const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
 
 // Directional Light (to simulate sunlight)
@@ -57,11 +53,8 @@ directionalLight.shadow.camera.far = 200;     // Verhoog de verre afstand voor s
 // Pas de bias aan om ongewenste artefacten in de schaduw te voorkomen
 directionalLight.shadow.bias = -0.01; // Verhoog de bias iets meer om de schaduwen verder weg van het object te plaatsen
 
-
 // Verlichting toevoegen aan de scene
 scene.add(directionalLight);
-
-
 
 // Handle window resize
 window.addEventListener('resize', () => {
@@ -275,7 +268,8 @@ textureOptions.forEach((option) => {
     }
   });
 });
-document.querySelector('.save').addEventListener('click', () => {
+
+document.querySelector('.checkout__btn').addEventListener('click', () => {
   console.log(sneakerSettings);
 
   // Prepare data to be stored in localStorage
@@ -288,8 +282,6 @@ document.querySelector('.save').addEventListener('click', () => {
   // Save sneakerData to localStorage
   localStorage.setItem('sneakerData', JSON.stringify(sneakerData));
   console.log("Sneaker data saved to localStorage:", sneakerData);
-
- 
 });
 
 
@@ -468,9 +460,6 @@ window.addEventListener('click', (event) => {
     }, 300); // 300ms voor het highlight effect
   }
 });
-
-
-
 
 // Define the selectSize function
 window.selectSize = function(size) {
