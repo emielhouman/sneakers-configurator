@@ -194,6 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Voeg het model toe aan de scène
       scene.add(sneaker);
       console.log('Model geladen en toegevoegd aan scène:', sneaker);
+      captureAndStoreSneakerSnapshot();
     },
     undefined,
     (error) => {
@@ -271,26 +272,64 @@ function selectSneakerPart() {
 
 
 
-// Functie om een snapshot te maken en op te slaan in localStorage
-function captureAndStoreSneakerSnapshot() {
-  renderer.render(scene, camera); // Render de huidige scène
 
-  // Maak een snapshot als base64 PNG-afbeelding
-  const snapshot = renderer.domElement.toDataURL('image/jpeg', 0.7); 
+async function uploadSnapshotToCloudinary(snapshot) {
+  const cloudinaryUploadUrl = 'https://api.cloudinary.com/v1_1/dgrct85lm/image/upload';
+  const uploadPreset = 'sneaker-configurator'; // Ensure this preset is unsigned in your Cloudinary settings
 
-  // Bereid de sneakergegevens voor om op te slaan
-  const sneakerData = {
-    order: {
-      sneakerConfigs: sneakerSettings,
-      snapshot: snapshot,
-    },
-  };
+  try {
+    const formData = new FormData();
+    formData.append('file', snapshot);
+    formData.append('upload_preset', uploadPreset);
 
-  // Sla de gegevens op in localStorage
-  localStorage.setItem('sneakerData', JSON.stringify(sneakerData));
-  console.log("Sneaker snapshot en data opgeslagen in localStorage:", sneakerData);
+    const response = await fetch(cloudinaryUploadUrl, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Cloudinary Response:', data);
+      return data.secure_url; // Return the Cloudinary URL of the uploaded image
+    } else {
+      console.error('Cloudinary upload failed:', await response.text());
+      return null;
+    }
+  } catch (error) {
+    console.error('Error uploading to Cloudinary:', error);
+    return null;
+  }
 }
 
+async function captureAndStoreSneakerSnapshot() {
+  if (!sneaker) return;
+
+  renderer.render(scene, camera);
+  renderer.domElement.toBlob(async (blob) => {
+    if (blob) {
+      const snapshotFile = new File([blob], 'sneaker_snapshot.png', { type: 'image/png' });
+      
+      // Upload to Cloudinary
+      const snapshotUrl = await uploadSnapshotToCloudinary(snapshotFile);
+
+      if (snapshotUrl) {
+        const sneakerData = {
+          order: {
+            sneakerConfigs: sneakerSettings,
+            snapshotUrl: snapshotUrl, // Store the Cloudinary URL
+          },
+        };
+
+        localStorage.setItem('sneakerData', JSON.stringify(sneakerData));
+        console.log('Sneaker snapshot uploaded to Cloudinary:', snapshotUrl);
+      } else {
+        console.error('Failed to upload snapshot to Cloudinary');
+      }
+    }
+  }, 'image/png');
+}
+
+  
 // Functie om sneakerinstellingen bij te werken
 function updateSneakerPart(color, texture, colorName, textureName) {
   const partName = sneakerParts[sneakerPartsIndex].part;
@@ -369,15 +408,11 @@ textureOptions.forEach((option) => {
   });
 });
 
-// Event listener voor de "save" knop
 document.querySelector('.save').addEventListener('click', () => {
-
-//set sneaker position to outside_1
-sneaker.targetRotation.set(Math.PI / 14, Math.PI / -4, Math.PI / 12, Math.PI / 12);
-
-  captureAndStoreSneakerSnapshot();
+  if (sneaker) {
+    captureAndStoreSneakerSnapshot();
+  }
 });
-
 
 
 
